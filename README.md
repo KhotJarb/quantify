@@ -21,7 +21,31 @@
 
 <br />
 
+[![Launch App](https://img.shields.io/badge/%E2%86%92%20Launch%20the%20App-Try%20Quantify%20Free-8b7355?style=for-the-badge&labelColor=1f1d19)](https://quantify-ashen.vercel.app/)
+
+<br />
+
 </div>
+
+---
+
+<br />
+
+## Live Demo
+
+<br />
+
+No installation required. The app is deployed and publicly accessible:
+
+<br />
+
+> **[→ Try Quantify Now](https://quantify-ashen.vercel.app/)**
+
+<br />
+
+For the full native experience on mobile, open the link in Safari (iOS) or Chrome (Android) and select **Add to Home Screen** — the app will launch without any browser UI.
+
+<br />
 
 ---
 

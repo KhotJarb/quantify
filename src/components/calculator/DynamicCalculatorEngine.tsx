@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useCallback, useMemo } from 'react';
+import { useState, useReducer, useCallback, useMemo } from 'react';
 import Decimal from 'decimal.js';
 import type { CalculatorSchema, CalculatorField } from '@/types/calculator';
 import { evaluateFormulas } from '@/engine/formulaParser';
@@ -203,6 +203,9 @@ export default function DynamicCalculatorEngine({ schema }: DynamicCalculatorEng
           ↺ Reset
         </button>
       </div>
+
+      {/* Usage Guide */}
+      {schema.guide && <GuidePanel guide={schema.guide} />}
     </div>
   );
 }
@@ -325,4 +328,51 @@ function FieldRenderer({ field, value, selectedUnit, onValueChange, onUnitChange
     default:
       return null;
   }
+}
+
+/* ============================================================
+   Guide Panel — collapsible usage instructions
+   ============================================================ */
+
+import type { UsageGuide } from '@/types/calculator';
+
+function GuidePanel({ guide }: { guide: UsageGuide }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const sections = [
+    { icon: '📖', title: 'What is it?', content: guide.whatIsIt },
+    { icon: '🎯', title: 'How to use', content: guide.howToUse },
+    { icon: '💡', title: 'Example scenario', content: guide.exampleScenario },
+    { icon: '🏆', title: 'Pro tip', content: guide.proTip },
+  ];
+
+  return (
+    <div className="calc-guide">
+      <button
+        className="calc-guide__toggle"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+      >
+        <span className="calc-guide__toggle-icon">📘</span>
+        <span className="calc-guide__toggle-text">Usage Guide</span>
+        <span className={`calc-guide__chevron ${isOpen ? 'calc-guide__chevron--open' : ''}`}>
+          ▾
+        </span>
+      </button>
+
+      {isOpen && (
+        <div className="calc-guide__body">
+          {sections.map((section) => (
+            <div key={section.title} className="calc-guide__section">
+              <h3 className="calc-guide__section-title">
+                <span className="calc-guide__section-icon">{section.icon}</span>
+                {section.title}
+              </h3>
+              <p className="calc-guide__section-content">{section.content}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

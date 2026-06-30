@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import type { Category } from '@/types/calculator';
 
 interface SidebarProps {
@@ -55,10 +56,11 @@ export default function Sidebar({
       <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
         {/* Brand */}
         <div className="sidebar__brand">
-          <div className="sidebar__brand-logo">Q</div>
+          <div className="sidebar__brand-logo">
+            <Image src="/logo.svg" alt="Quantify" width={40} height={40} priority />
+          </div>
           <div className="sidebar__brand-text">
             <span className="sidebar__brand-name">Quantify</span>
-            <span className="sidebar__brand-tagline">10,000+ Calculators</span>
           </div>
         </div>
 

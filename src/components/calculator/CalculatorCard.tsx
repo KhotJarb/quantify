@@ -18,7 +18,7 @@ export default function CalculatorCard({ calculator, index = 0 }: CalculatorCard
       <h3 className="calc-card__title">{calculator.title}</h3>
       <p className="calc-card__desc">{calculator.description}</p>
       <div className="calc-card__tags">
-        {calculator.tags.slice(0, 3).map((tag) => (
+        {(calculator.tags ?? []).slice(0, 3).map((tag) => (
           <span key={tag} className="calc-card__tag">{tag}</span>
         ))}
       </div>

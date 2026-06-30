@@ -79,6 +79,19 @@ export interface OutputField {
   suffix?: string;
 }
 
+// === Usage Guide ===
+
+export interface UsageGuide {
+  /** Explain the concept in simple, accessible terms. */
+  whatIsIt: string;
+  /** Step-by-step instructions for the user. */
+  howToUse: string;
+  /** A realistic, worked example scenario. */
+  exampleScenario: string;
+  /** Financial insight or advanced tip. */
+  proTip: string;
+}
+
 // === Calculator Schema (root) ===
 
 export interface CalculatorSchema {
@@ -93,6 +106,8 @@ export interface CalculatorSchema {
   inputs: CalculatorField[];
   formulas: FormulaStep[];
   outputs: OutputField[];
+  /** Optional usage guide rendered below the calculator results. */
+  guide?: UsageGuide;
   metadata?: {
     author?: string;
     version?: string;

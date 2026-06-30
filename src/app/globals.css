@@ -100,38 +100,48 @@
   --content-max-width: 1400px;
 }
 
-/* --- Dark Mode --- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-primary: #1a1714;
-    --bg-secondary: #222019;
-    --bg-tertiary: #2a2621;
-    --bg-card: #2a2621;
-    --bg-card-hover: #332e28;
-    --bg-sidebar: #1f1c17;
-    --bg-input: #2a2621;
-    --bg-input-focus: #332e28;
+/* --- Dark Mode (class-based via next-themes) --- */
+/* Triggered by <html class="dark"> — set by next-themes ThemeProvider */
+.dark {
+  color-scheme: dark;
 
-    --text-primary: #f5f3f0;
-    --text-secondary: #b8b0a4;
-    --text-tertiary: #948b7d;
-    --text-muted: #756c60;
+  --bg-primary: #141210;
+  --bg-secondary: #1c1a17;
+  --bg-tertiary: #242118;
+  --bg-card: #1f1d19;
+  --bg-card-hover: #28261f;
+  --bg-sidebar: #161410;
+  --bg-input: #242118;
+  --bg-input-focus: #2c2920;
 
-    --border-primary: #3d382f;
-    --border-secondary: #332e28;
-    --border-input: #4a443b;
+  --text-primary: #f0ede8;
+  --text-secondary: #b8b0a4;
+  --text-tertiary: #948b7d;
+  --text-muted: #756c60;
 
-    --accent-primary: #b8a88e;
-    --accent-primary-hover: #c4b69e;
-    --accent-primary-light: #8b7355;
-    --accent-primary-subtle: rgba(184, 168, 142, 0.1);
+  --border-primary: #35302a;
+  --border-secondary: #2c2920;
+  --border-focus: #b8a88e;
+  --border-input: #42382e;
 
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.25), 0 4px 6px rgba(0, 0, 0, 0.15);
-    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.15);
-  }
+  --accent-primary: #b8a88e;
+  --accent-primary-hover: #c4b69e;
+  --accent-primary-light: #8b7355;
+  --accent-primary-subtle: rgba(184, 168, 142, 0.1);
+  --accent-success: #6a9e7a;
+  --accent-success-subtle: rgba(106, 158, 122, 0.1);
+  --accent-warning: #d4a45a;
+  --accent-warning-subtle: rgba(212, 164, 90, 0.1);
+  --accent-danger: #c86c6c;
+  --accent-danger-subtle: rgba(200, 108, 108, 0.1);
+  --accent-info: #6c8a9a;
+  --accent-info-subtle: rgba(108, 138, 154, 0.1);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.45), 0 8px 10px rgba(0, 0, 0, 0.25);
 }
 
 /* --- Reset & Base --- */
@@ -149,6 +159,12 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+.dark html,
+html.dark {
+  color-scheme: dark;
 }
 
 body {
@@ -205,20 +221,19 @@ small {
   position: sticky;
   top: 0;
   z-index: 40;
-  height: var(--header-height);
+  min-height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-8);
+  padding: var(--space-4) var(--space-8);
   background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-secondary);
-  backdrop-filter: blur(12px);
-  background-color: rgba(250, 249, 247, 0.85);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (prefers-color-scheme: dark) {
   .app-header {
-    background-color: rgba(26, 23, 20, 0.85);
+    background-color: var(--bg-primary);
   }
 }
 
@@ -259,17 +274,18 @@ small {
 }
 
 .sidebar__brand-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light));
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  color: white;
-  font-weight: 700;
   flex-shrink: 0;
+}
+
+.sidebar__brand-logo img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
 .sidebar__brand-text {
@@ -1092,30 +1108,29 @@ small {
 }
 
 .animate-fade-in {
-  animation: fadeIn var(--transition-base) ease-out forwards;
+  animation: fadeIn 250ms ease-out both;
 }
 
 .animate-slide-in {
-  animation: slideInLeft var(--transition-base) ease-out forwards;
+  animation: slideInLeft 250ms ease-out both;
 }
 
-/* Stagger children */
+/* Stagger children — use literal durations, not CSS vars (vars in animation shorthand can silently fail) */
 .stagger-children > * {
-  opacity: 0;
-  animation: fadeIn var(--transition-base) ease-out forwards;
+  animation: fadeIn 350ms ease-out both;
 }
 
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.stagger-children > *:nth-child(2) { animation-delay: 40ms; }
-.stagger-children > *:nth-child(3) { animation-delay: 80ms; }
-.stagger-children > *:nth-child(4) { animation-delay: 120ms; }
-.stagger-children > *:nth-child(5) { animation-delay: 160ms; }
-.stagger-children > *:nth-child(6) { animation-delay: 200ms; }
-.stagger-children > *:nth-child(7) { animation-delay: 240ms; }
-.stagger-children > *:nth-child(8) { animation-delay: 280ms; }
-.stagger-children > *:nth-child(9) { animation-delay: 320ms; }
-.stagger-children > *:nth-child(10) { animation-delay: 360ms; }
-.stagger-children > *:nth-child(n+11) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+.stagger-children > *:nth-child(9) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(10) { animation-delay: 450ms; }
+.stagger-children > *:nth-child(n+11) { animation-delay: 500ms; }
 
 /* --- Utility --- */
 .sr-only {
@@ -1166,4 +1181,548 @@ small {
 
 .sidebar-overlay--visible {
   display: block;
+}
+
+/* ============================================================
+   Usage Guide Panel
+   ============================================================ */
+
+.calc-guide {
+  margin-top: var(--space-8);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.calc-guide__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-secondary);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: background-color 200ms ease;
+}
+
+.calc-guide__toggle:hover {
+  background: var(--stone-200, #e8e5e0);
+}
+
+.calc-guide__toggle-icon {
+  font-size: 1.1rem;
+}
+
+.calc-guide__toggle-text {
+  flex: 1;
+  text-align: left;
+}
+
+.calc-guide__chevron {
+  font-size: 0.85rem;
+  transition: transform 250ms ease;
+  color: var(--text-tertiary);
+}
+
+.calc-guide__chevron--open {
+  transform: rotate(180deg);
+}
+
+.calc-guide__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  animation: guide-fade-in 300ms ease both;
+}
+
+@keyframes guide-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.calc-guide__section {
+  padding: var(--space-5);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.calc-guide__section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-3);
+}
+
+.calc-guide__section-icon {
+  font-size: 1rem;
+}
+
+.calc-guide__section-content {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .calc-guide__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Standard Calculator (Button-Grid Style)
+   ============================================================ */
+
+.std-calc {
+  max-width: 380px;
+  margin: var(--space-8) auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  font-family: var(--font-sans);
+}
+
+/* Display area */
+.std-calc__display {
+  position: relative;
+  background: var(--bg);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.std-calc__history {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  min-height: 1.4em;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.std-calc__value {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  color: var(--text-primary);
+  line-height: 1.2;
+  transition: font-size 0.15s ease;
+  word-break: break-all;
+  text-align: right;
+  width: 100%;
+}
+
+.std-calc__memory-indicator {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-4);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+/* Memory row */
+.std-calc__row--memory {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.std-calc__btn--memory {
+  background: var(--surface);
+  border: none;
+  padding: var(--space-2) 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: var(--font-sans);
+  letter-spacing: 0.03em;
+}
+
+.std-calc__btn--memory:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  color: var(--accent);
+}
+
+.std-calc__btn--memory:active {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+}
+
+/* Button grid */
+.std-calc__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+/* Last row: + spans col 1, = spans cols 2-4 */
+.std-calc__grid .std-calc__btn--equals {
+  grid-column: span 3;
+}
+
+.std-calc__btn {
+  border: none;
+  padding: var(--space-5) 0;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.12s, transform 0.08s;
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.std-calc__btn:active {
+  transform: scale(0.96);
+}
+
+/* Number buttons */
+.std-calc__btn--num {
+  background: var(--surface);
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+.std-calc__btn--num:hover {
+  background: color-mix(in srgb, var(--text-primary) 6%, var(--surface));
+}
+
+/* Function buttons (%, CE, C, ⌫, √) */
+.std-calc__btn--func {
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--surface));
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.std-calc__btn--func:hover {
+  background: color-mix(in srgb, var(--text-primary) 10%, var(--surface));
+}
+
+/* Operation buttons (+, −, ×, ÷) */
+.std-calc__btn--op {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 1.35rem;
+}
+
+.std-calc__btn--op:hover {
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+}
+
+/* Equals button */
+.std-calc__btn--equals {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.std-calc__btn--equals:hover {
+  background: color-mix(in srgb, var(--accent) 85%, black);
+}
+
+.std-calc__btn--equals:active {
+  background: color-mix(in srgb, var(--accent) 75%, black);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .std-calc {
+    max-width: 100%;
+    margin: var(--space-4) 0;
+    border-radius: var(--radius-md);
+  }
+
+  .std-calc__btn {
+    padding: var(--space-4) 0;
+    font-size: 1.15rem;
+  }
+}
+
+/* ============================================================
+   Scientific Calculator
+   ============================================================ */
+
+.sci-calc {
+  max-width: 520px;
+  margin: var(--space-8) auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+.sci-calc__display {
+  position: relative;
+  background: var(--bg);
+  padding: var(--space-5) var(--space-6) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.sci-calc__angle-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-4);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+}
+
+.sci-calc__memory-badge {
+  position: absolute;
+  top: var(--space-3);
+  left: 4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+}
+
+.sci-calc__history {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  min-height: 1.2em;
+  font-family: var(--font-mono);
+}
+
+.sci-calc__value {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  color: var(--text-primary);
+  line-height: 1.2;
+  transition: font-size 0.12s ease;
+  word-break: break-all;
+  text-align: right;
+  width: 100%;
+}
+
+.sci-calc__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.sci-calc__btn {
+  border: none;
+  padding: var(--space-4) 0;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.1s, transform 0.08s;
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.sci-calc__btn:active { transform: scale(0.94); }
+
+.sci-calc__btn--num {
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+.sci-calc__btn--num:hover {
+  background: color-mix(in srgb, var(--text-primary) 6%, var(--surface));
+}
+
+.sci-calc__btn--func {
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--surface));
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.sci-calc__btn--func:hover {
+  background: color-mix(in srgb, var(--text-primary) 10%, var(--surface));
+}
+
+.sci-calc__btn--op {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+.sci-calc__btn--op:hover {
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+}
+
+.sci-calc__btn--equals {
+  background: var(--accent);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.sci-calc__btn--equals:hover {
+  background: color-mix(in srgb, var(--accent) 85%, black);
+}
+
+.sci-calc__btn--mem {
+  background: var(--surface);
+  color: var(--text-tertiary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.sci-calc__btn--mem:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  color: var(--accent);
+}
+
+.sci-calc__btn--mode {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.sci-calc__btn--mode:hover {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+}
+
+@media (max-width: 540px) {
+  .sci-calc { max-width: 100%; }
+  .sci-calc__btn { padding: var(--space-3) 0; font-size: 0.85rem; }
+  .sci-calc__btn--num { font-size: 1rem; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Theme Toggle
+──────────────────────────────────────────────────────────────── */
+
+/* Theme colour tokens switch instantly — no wildcard transition.
+   Animating background-color on hundreds of elements simultaneously
+   causes dropped frames. The toggle itself animates via Framer Motion. */
+
+.theme-toggle {
+  /* Reset button */
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+
+  /* Size — large enough hit target */
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-full);
+
+  /* Focus ring */
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+
+.theme-toggle:focus-visible {
+  outline-color: var(--accent-primary);
+}
+
+.theme-toggle__track {
+  /* Pill track */
+  display: flex;
+  align-items: center;
+  width: 52px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  padding: 0 3px;
+  position: relative;
+  border: 1.5px solid var(--border-primary);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.theme-toggle__thumb {
+  /* Circular thumb that slides across the track */
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  flex-shrink: 0;
+  /* Clip overlapping icons during the crossfade */
+  overflow: hidden;
+}
+
+.theme-toggle__icon {
+  /* Absolute so both icons occupy the same space during crossfade */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  line-height: 1;
+}
+
+/* Skeleton shown before JS hydrates (prevents layout shift) */
+.theme-toggle-skeleton {
+  width: 52px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  background: var(--border-primary);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

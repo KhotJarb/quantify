@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+
+    <!-- Metallic gold gradient: dark bronze → bright gold highlight → deep bronze -->
+    <!-- Matches the realistic brushed-metal look in the reference image -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#7A5218" />
+      <stop offset="25%"  stop-color="#C08030" />
+      <stop offset="48%"  stop-color="#E8C060" />
+      <stop offset="65%"  stop-color="#D4A840" />
+      <stop offset="85%"  stop-color="#A06820" />
+      <stop offset="100%" stop-color="#7A5218" />
+    </linearGradient>
+
+    <!-- Subtle vertical highlight on each bar (left-edge bright, right-edge dark) -->
+    <linearGradient id="barShine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="rgba(255,220,120,0.45)" />
+      <stop offset="40%"  stop-color="rgba(255,220,120,0.0)"  />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.25)"       />
+    </linearGradient>
+
+    <!-- Ring gradient: medium gray top-left → dark charcoal bottom-right -->
+    <!-- Gives the pressed/debossed ring feel in the reference -->
+    <linearGradient id="ring" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%"   stop-color="#767676" />
+      <stop offset="40%"  stop-color="#505050" />
+      <stop offset="100%" stop-color="#383838" />
+    </linearGradient>
+
+    <!-- Clip to inside the ring (r=35 matches inner edge of stroke) -->
+    <clipPath id="inner">
+      <circle cx="54" cy="52" r="35" />
+    </clipPath>
+
+  </defs>
+
+  <!-- ── Ring (magnifying glass circle) ────────────────────── -->
+  <!-- Thick stroke, solid charcoal — matches the bold ring in image -->
+  <circle
+    cx="54" cy="52"
+    r="36"
+    stroke="url(#ring)"
+    stroke-width="11"
+    fill="white"
+  />
+
+  <!-- ── Handle / tail ──────────────────────────────────────── -->
+  <line
+    x1="81" y1="79"
+    x2="100" y2="100"
+    stroke="url(#ring)"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
+
+  <!-- ── Bar chart (3 bars, clipped to circle interior) ─────── -->
+
+  <!-- Bar 1 — shortest (left) -->
+  <rect x="24" y="52" width="14" height="22" rx="1.5"
+        fill="url(#gold)" clip-path="url(#inner)" />
+  <rect x="24" y="52" width="14" height="22" rx="1.5"
+        fill="url(#barShine)" clip-path="url(#inner)" />
+
+  <!-- Bar 2 — medium (center) -->
+  <rect x="43" y="40" width="14" height="34" rx="1.5"
+        fill="url(#gold)" clip-path="url(#inner)" />
+  <rect x="43" y="40" width="14" height="34" rx="1.5"
+        fill="url(#barShine)" clip-path="url(#inner)" />
+
+  <!-- Bar 3 — tallest (right) -->
+  <rect x="62" y="28" width="14" height="46" rx="1.5"
+        fill="url(#gold)" clip-path="url(#inner)" />
+  <rect x="62" y="28" width="14" height="46" rx="1.5"
+        fill="url(#barShine)" clip-path="url(#inner)" />
+
+  <!-- ── Diagonal slash ─────────────────────────────────────── -->
+  <!-- Crisp white line crossing all bars bottom-left to top-right -->
+  <line
+    x1="18" y1="76"
+    x2="78" y2="28"
+    stroke="white"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    clip-path="url(#inner)"
+    opacity="0.88"
+  />
+
+</svg>

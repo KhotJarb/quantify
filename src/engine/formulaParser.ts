@@ -393,24 +393,229 @@ function evaluate(node: ASTNode, ctx: Record<string, Decimal>): Decimal {
 /** Dispatch a named function call with pre-evaluated Decimal arguments. */
 function callFunction(name: string, args: Decimal[]): Decimal {
   switch (name) {
+    // ── Basic math ──────────────────────────────────────────────────────
     case 'sqrt':  return args[0]?.sqrt() ?? new Decimal(NaN);
     case 'abs':   return args[0]?.abs() ?? new Decimal(NaN);
     case 'ceil':  return args[0]?.ceil() ?? new Decimal(NaN);
     case 'floor': return args[0]?.floor() ?? new Decimal(NaN);
-    case 'round': return args[0]?.round() ?? new Decimal(NaN);
+    case 'round': {
+      if (args.length >= 2) {
+        // round(value, decimals)
+        const dp = args[1].toNumber();
+        return args[0].toDecimalPlaces(dp, Decimal.ROUND_HALF_UP);
+      }
+      return args[0]?.round() ?? new Decimal(NaN);
+    }
     case 'exp':   return args[0]?.exp() ?? new Decimal(NaN);
     case 'ln':    return args[0]?.ln() ?? new Decimal(NaN);
-    case 'log':   return args[0] ? args[0].ln().div(new Decimal(10).ln()) : new Decimal(NaN); // log base 10
+    case 'log':   return args[0] ? args[0].ln().div(new Decimal(10).ln()) : new Decimal(NaN);
+    case 'trunc': return args[0]?.trunc() ?? new Decimal(NaN);
+    case 'sign':  return args[0] ? new Decimal(args[0].isPositive() ? 1 : args[0].isNegative() ? -1 : 0) : new Decimal(NaN);
 
-    // Trig — convert degrees to radians before calling Math.*
+    // ── Trig — convert degrees to radians ───────────────────────────────
     case 'sin': return args[0] ? new Decimal(Math.sin(args[0].times(DEG_TO_RAD).toNumber())) : new Decimal(NaN);
     case 'cos': return args[0] ? new Decimal(Math.cos(args[0].times(DEG_TO_RAD).toNumber())) : new Decimal(NaN);
     case 'tan': return args[0] ? new Decimal(Math.tan(args[0].times(DEG_TO_RAD).toNumber())) : new Decimal(NaN);
 
-    // Multi-argument functions
+    // ── Multi-argument math ─────────────────────────────────────────────
     case 'min': return args.length > 0 ? Decimal.min(...args) : new Decimal(NaN);
     case 'max': return args.length > 0 ? Decimal.max(...args) : new Decimal(NaN);
     case 'pow': return args.length >= 2 ? args[0].pow(args[1]) : new Decimal(NaN);
+    case 'mod': return args.length >= 2 && !args[1].isZero() ? args[0].mod(args[1]) : new Decimal(NaN);
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  FINANCIAL FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════════
+
+    // ── pmt(rate, nper, pv [, fv=0]) ────────────────────────────────────
+    // Standard annuity payment. Positive = payment out.
+    // PMT = rate * (PV * (1+r)^n + FV) / ((1+r)^n - 1)   (when rate ≠ 0)
+    case 'pmt': {
+      if (args.length < 3) return new Decimal(NaN);
+      const [r, n, pv_val] = args;
+      const fv_val = args[3] ?? new Decimal(0);
+      if (r.isZero()) {
+        // Simple division when rate is 0
+        return n.isZero() ? new Decimal(NaN) : pv_val.plus(fv_val).div(n).neg();
+      }
+      const compounded = r.plus(1).pow(n);
+      return r.times(pv_val.times(compounded).plus(fv_val))
+        .div(compounded.minus(1))
+        .neg();
+    }
+
+    // ── fv(rate, nper, pmt, pv) ─────────────────────────────────────────
+    // Future Value of an annuity + lump sum.
+    // FV = -PV*(1+r)^n - PMT*((1+r)^n - 1)/r
+    case 'fv': {
+      if (args.length < 4) return new Decimal(NaN);
+      const [r, n, payment, pv_val] = args;
+      if (r.isZero()) {
+        return pv_val.plus(payment.times(n)).neg();
+      }
+      const compounded = r.plus(1).pow(n);
+      return pv_val.times(compounded)
+        .plus(payment.times(compounded.minus(1)).div(r))
+        .neg();
+    }
+
+    // ── pv(rate, nper, pmt [, fv=0]) ────────────────────────────────────
+    // Present Value.
+    // PV = (-FV - PMT*((1+r)^n - 1)/r) / (1+r)^n
+    case 'pv': {
+      if (args.length < 3) return new Decimal(NaN);
+      const [r, n, payment] = args;
+      const fv_val = args[3] ?? new Decimal(0);
+      if (r.isZero()) {
+        return payment.times(n).plus(fv_val).neg();
+      }
+      const compounded = r.plus(1).pow(n);
+      return fv_val.neg()
+        .minus(payment.times(compounded.minus(1)).div(r))
+        .div(compounded);
+    }
+
+    // ── nper(rate, pmt, pv [, fv=0]) ────────────────────────────────────
+    // Number of periods to reach FV.
+    // n = ln((-FV*r + PMT) / (PV*r + PMT)) / ln(1+r)
+    case 'nper': {
+      if (args.length < 3) return new Decimal(NaN);
+      const [r, payment, pv_val] = args;
+      const fv_val = args[3] ?? new Decimal(0);
+      if (r.isZero()) {
+        return payment.isZero() ? new Decimal(NaN) : pv_val.plus(fv_val).div(payment).neg();
+      }
+      const numerator = payment.minus(fv_val.times(r));
+      const denominator = payment.plus(pv_val.times(r));
+      if (numerator.isZero() || denominator.isZero()) return new Decimal(NaN);
+      if (numerator.div(denominator).lte(0)) return new Decimal(NaN);
+      return numerator.div(denominator).ln().div(r.plus(1).ln());
+    }
+
+    // ── rate(nper, pmt, pv [, fv=0]) ────────────────────────────────────
+    // Solve for interest rate using Newton-Raphson iteration.
+    case 'rate': {
+      if (args.length < 3) return new Decimal(NaN);
+      const nper = args[0].toNumber();
+      const payment = args[1].toNumber();
+      const pv_val = args[2].toNumber();
+      const fv_val = args[3]?.toNumber() ?? 0;
+      let guess = 0.1;
+      for (let i = 0; i < 200; i++) {
+        const g1 = Math.pow(1 + guess, nper);
+        const fVal = pv_val * g1 + payment * (g1 - 1) / guess + fv_val;
+        const fDeriv = nper * pv_val * Math.pow(1 + guess, nper - 1)
+          + payment * (nper * Math.pow(1 + guess, nper - 1) * guess - (g1 - 1)) / (guess * guess);
+        if (Math.abs(fDeriv) < 1e-15) break;
+        const newGuess = guess - fVal / fDeriv;
+        if (Math.abs(newGuess - guess) < 1e-10) {
+          return new Decimal(newGuess);
+        }
+        guess = newGuess;
+      }
+      return new Decimal(guess);
+    }
+
+    // ── npv(rate, cf0, cf1, cf2, ...) ───────────────────────────────────
+    // Net Present Value: NPV = Σ CFt / (1+r)^t
+    case 'npv': {
+      if (args.length < 2) return new Decimal(NaN);
+      const r = args[0];
+      let result = new Decimal(0);
+      for (let t = 1; t < args.length; t++) {
+        result = result.plus(args[t].div(r.plus(1).pow(t - 1)));
+      }
+      return result;
+    }
+
+    // ── irr(cf0, cf1, cf2, ...) ─────────────────────────────────────────
+    // Internal Rate of Return using bisection method.
+    case 'irr': {
+      if (args.length < 2) return new Decimal(NaN);
+      const cfs = args.map(a => a.toNumber());
+      let lo = -0.99, hi = 10.0;
+      const npvCalc = (rate: number) => {
+        let sum = 0;
+        for (let t = 0; t < cfs.length; t++) {
+          sum += cfs[t] / Math.pow(1 + rate, t);
+        }
+        return sum;
+      };
+      for (let i = 0; i < 300; i++) {
+        const mid = (lo + hi) / 2;
+        const val = npvCalc(mid);
+        if (Math.abs(val) < 1e-10 || (hi - lo) < 1e-12) {
+          return new Decimal(mid);
+        }
+        if (npvCalc(lo) * val < 0) { hi = mid; } else { lo = mid; }
+      }
+      return new Decimal((lo + hi) / 2);
+    }
+
+    // ── cdf(x) ──────────────────────────────────────────────────────────
+    // Cumulative standard normal distribution (Abramowitz & Stegun approx).
+    // Used by Black-Scholes.
+    case 'cdf': {
+      if (!args[0]) return new Decimal(NaN);
+      const x = args[0].toNumber();
+      // Abramowitz & Stegun 26.2.17 approximation
+      const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;
+      const a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+      const sign = x < 0 ? -1 : 1;
+      const absX = Math.abs(x) / Math.sqrt(2);
+      const t = 1.0 / (1.0 + p * absX);
+      const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+      return new Decimal(0.5 * (1.0 + sign * y));
+    }
+
+    // ── bond_price(face, couponRate, ytm, periods) ──────────────────────
+    // Bond price = PV of coupon annuity + PV of face value
+    case 'bond_price': {
+      if (args.length < 4) return new Decimal(NaN);
+      const [face, couponRate, ytm, periods] = args;
+      const coupon = face.times(couponRate);
+      if (ytm.isZero()) return coupon.times(periods).plus(face);
+      const discount = ytm.plus(1).pow(periods);
+      const pvCoupons = coupon.times(new Decimal(1).minus(discount.pow(-1))).div(ytm);
+      const pvFace = face.div(discount);
+      return pvCoupons.plus(pvFace);
+    }
+
+    // ── macaulay_dur(face, couponRate, ytm, periods) ────────────────────
+    // Macaulay Duration = Σ [t * CFt / (1+y)^t] / Price
+    case 'macaulay_dur': {
+      if (args.length < 4) return new Decimal(NaN);
+      const [face, couponRate, ytm, periods] = args;
+      const coupon = face.times(couponRate);
+      const n = periods.toNumber();
+      let priceSum = new Decimal(0);
+      let weightedSum = new Decimal(0);
+      for (let t = 1; t <= n; t++) {
+        const df = ytm.plus(1).pow(t);
+        const pvCF = t < n ? coupon.div(df) : coupon.plus(face).div(df);
+        priceSum = priceSum.plus(pvCF);
+        weightedSum = weightedSum.plus(pvCF.times(t));
+      }
+      return priceSum.isZero() ? new Decimal(NaN) : weightedSum.div(priceSum);
+    }
+
+    // ── annuity_fv(pmt, rate, nper) ─────────────────────────────────────
+    // Future Value of an ordinary annuity: FV = PMT * ((1+r)^n - 1) / r
+    case 'annuity_fv': {
+      if (args.length < 3) return new Decimal(NaN);
+      const [payment, r, n] = args;
+      if (r.isZero()) return payment.times(n);
+      return payment.times(r.plus(1).pow(n).minus(1).div(r));
+    }
+
+    // ── annuity_pv(pmt, rate, nper) ─────────────────────────────────────
+    // Present Value of an ordinary annuity: PV = PMT * (1 - (1+r)^-n) / r
+    case 'annuity_pv': {
+      if (args.length < 3) return new Decimal(NaN);
+      const [payment, r, n] = args;
+      if (r.isZero()) return payment.times(n);
+      return payment.times(new Decimal(1).minus(r.plus(1).pow(n.neg())).div(r));
+    }
 
     default:
       return new Decimal(NaN); // unknown function

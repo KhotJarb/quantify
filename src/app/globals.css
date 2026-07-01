@@ -565,7 +565,72 @@ small {
   margin-top: var(--space-6);
 }
 
+/* ── Favorites: card wrapper & pin button ──────────────────── */
+.calc-card-wrapper {
+  position: relative;
+  animation: cardSlideIn var(--transition-base) both;
+}
+
+.pin-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-full);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 150ms ease, transform 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.calc-card-wrapper:hover .pin-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pin-btn--active {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  color: #C9963C;
+  background: color-mix(in srgb, #C9963C 12%, var(--bg-secondary));
+  border-color: color-mix(in srgb, #C9963C 30%, var(--border-primary));
+}
+
+.pin-btn:hover {
+  color: #C9963C;
+  background: color-mix(in srgb, #C9963C 12%, var(--bg-secondary));
+}
+
+/* ── Sidebar badge (favorites count) ──────────────────────── */
+.sidebar__badge {
+  margin-left: auto;
+  background: color-mix(in srgb, #C9963C 20%, var(--bg-secondary));
+  color: #C9963C;
+  border: 1px solid color-mix(in srgb, #C9963C 35%, transparent);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .calc-card {
+
   display: flex;
   flex-direction: column;
   padding: var(--space-6);

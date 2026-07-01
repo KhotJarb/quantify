@@ -6,7 +6,10 @@ import SearchBar from '@/components/layout/SearchBar';
 import CalculatorCard from '@/components/calculator/CalculatorCard';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import { categories, calculators } from '@/data/calculators';
+import { useFavorites } from '@/hooks/useFavorites';
 import type { CalculatorSchema } from '@/types/calculator';
+
+const FAVORITES_ID = '__favorites__';
 
 export default function DashboardPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -14,30 +17,30 @@ export default function DashboardPage() {
   const [searchResults, setSearchResults] = useState<CalculatorSchema[] | null>(null);
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { favorites, toggle: toggleFavorite } = useFavorites();
+
+  const showingFavorites = activeCategory === FAVORITES_ID;
 
   /* --- Filtering logic --- */
   const filteredCalculators = useMemo(() => {
+    if (showingFavorites) {
+      return calculators.filter((c) => favorites.has(c.id));
+    }
+
     let items = searchResults ?? calculators;
 
-    // Category filter
     if (activeCategory) {
       items = items.filter((c) => c.category === activeCategory);
     }
-
-    // Subcategory filter
     if (activeSubcategory) {
       items = items.filter((c) => c.subcategory === activeSubcategory);
     }
-
-    // Tag filter
     if (activeTags.length > 0) {
-      items = items.filter((c) =>
-        activeTags.every((tag) => c.tags.includes(tag))
-      );
+      items = items.filter((c) => activeTags.every((tag) => c.tags.includes(tag)));
     }
 
     return items;
-  }, [searchResults, activeCategory, activeSubcategory, activeTags]);
+  }, [searchResults, activeCategory, activeSubcategory, activeTags, favorites, showingFavorites]);
 
   /* --- Handlers --- */
   const handleCategorySelect = useCallback((categoryId: string | null) => {
@@ -60,12 +63,12 @@ export default function DashboardPage() {
     );
   }, []);
 
-  const handleClearTags = useCallback(() => {
-    setActiveTags([]);
-  }, []);
+  const handleClearTags = useCallback(() => setActiveTags([]), []);
 
-  /* --- Active category label --- */
-  const activeCategoryLabel = activeCategory
+  /* --- Labels --- */
+  const activeCategoryLabel = showingFavorites
+    ? 'Favorites'
+    : activeCategory
     ? categories.find((c) => c.id === activeCategory)?.label ?? 'All'
     : 'All';
 
@@ -77,16 +80,16 @@ export default function DashboardPage() {
 
   return (
     <div className="app-layout">
-      {/* Sidebar */}
       <Sidebar
         categories={categories}
         activeCategory={activeCategory}
         activeSubcategory={activeSubcategory}
         onCategorySelect={handleCategorySelect}
         onSubcategorySelect={handleSubcategorySelect}
+        favoritesCount={favorites.size}
+        favoritesId={FAVORITES_ID}
       />
 
-      {/* Mobile overlay */}
       {mobileMenuOpen && (
         <div
           className="sidebar-overlay sidebar-overlay--visible"
@@ -94,9 +97,7 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Main content */}
       <main className="app-main">
-        {/* Header */}
         <header className="app-header">
           <button
             className="mobile-menu-btn"
@@ -115,19 +116,21 @@ export default function DashboardPage() {
           <ThemeToggle />
         </header>
 
-        {/* Content */}
         <div className="app-content">
-          {/* Dashboard header */}
           <div className="dashboard-header">
             <h1 className="dashboard-header__title">
-              {activeSubcategoryLabel
+              {showingFavorites
+                ? '★ Favorites'
+                : activeSubcategoryLabel
                 ? `${activeCategoryLabel} › ${activeSubcategoryLabel}`
                 : activeCategoryLabel === 'All'
                 ? 'All Calculators'
                 : activeCategoryLabel}
             </h1>
             <p className="dashboard-header__subtitle">
-              {activeCategory
+              {showingFavorites
+                ? 'Your pinned calculators'
+                : activeCategory
                 ? `Browsing ${activeCategoryLabel.toLowerCase()} tools`
                 : 'Browse our complete collection of precision calculators'}
             </p>
@@ -136,14 +139,15 @@ export default function DashboardPage() {
                 <span className="dashboard-stat__value">{filteredCalculators.length}</span>
                 <span>{filteredCalculators.length === 1 ? 'calculator' : 'calculators'}</span>
               </div>
-              <div className="dashboard-stat">
-                <span className="dashboard-stat__value">{categories.length}</span>
-                <span>categories</span>
-              </div>
+              {!showingFavorites && (
+                <div className="dashboard-stat">
+                  <span className="dashboard-stat__value">{categories.length}</span>
+                  <span>categories</span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Calculator grid */}
           {filteredCalculators.length > 0 ? (
             <div className="calc-grid stagger-children">
               {filteredCalculators.map((calc, index) => (
@@ -151,15 +155,23 @@ export default function DashboardPage() {
                   key={calc.id}
                   calculator={calc}
                   index={index}
+                  isFavorite={favorites.has(calc.id)}
+                  onToggleFavorite={toggleFavorite}
                 />
               ))}
             </div>
           ) : (
             <div className="empty-state">
-              <div className="empty-state__icon">🔍</div>
-              <h3 className="empty-state__title">No calculators found</h3>
+              <div className="empty-state__icon">
+                {showingFavorites ? '★' : '🔍'}
+              </div>
+              <h3 className="empty-state__title">
+                {showingFavorites ? 'No favorites yet' : 'No calculators found'}
+              </h3>
               <p className="empty-state__desc">
-                Try adjusting your search or filters to find what you&apos;re looking for.
+                {showingFavorites
+                  ? 'Pin any calculator by clicking the ☆ star in its corner.'
+                  : 'Try adjusting your search or filters to find what you\'re looking for.'}
               </p>
             </div>
           )}

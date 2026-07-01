@@ -10,6 +10,8 @@ interface SidebarProps {
   activeSubcategory: string | null;
   onCategorySelect: (categoryId: string | null) => void;
   onSubcategorySelect: (categoryId: string, subcategoryId: string | null) => void;
+  favoritesCount?: number;
+  favoritesId?: string;
 }
 
 export default function Sidebar({
@@ -18,6 +20,8 @@ export default function Sidebar({
   activeSubcategory,
   onCategorySelect,
   onSubcategorySelect,
+  favoritesCount = 0,
+  favoritesId = '__favorites__',
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
@@ -66,13 +70,26 @@ export default function Sidebar({
 
         {/* Navigation */}
         <nav className="sidebar__nav">
+          {/* Favorites */}
+          <div className="sidebar__section">
+            <button
+              className={`sidebar__category-btn ${activeCategory === favoritesId ? 'sidebar__category-btn--active' : ''}`}
+              onClick={() => onCategorySelect(favoritesId)}
+              title="Favorites"
+            >
+              <span className="sidebar__category-icon">★</span>
+              <span className="sidebar__category-label">Favorites</span>
+              {favoritesCount > 0 && (
+                <span className="sidebar__badge">{favoritesCount}</span>
+              )}
+            </button>
+          </div>
+
           {/* All calculators button */}
           <div className="sidebar__section">
             <button
               className={`sidebar__category-btn ${activeCategory === null ? 'sidebar__category-btn--active' : ''}`}
-              onClick={() => {
-                onCategorySelect(null);
-              }}
+              onClick={() => onCategorySelect(null)}
               title="All Calculators"
             >
               <span className="sidebar__category-icon">📊</span>

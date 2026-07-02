@@ -7,6 +7,7 @@ import StandardCalculator from '@/components/calculator/StandardCalculator';
 import ScientificCalculator from '@/components/calculator/ScientificCalculator';
 import GapTimeOptimizer from '@/components/calculator/GapTimeOptimizer';
 import FiftyMinutesCalculator from '@/components/calculator/FiftyMinutesCalculator';
+import ProgressiveOverloadCalculator from '@/components/calculator/ProgressiveOverloadCalculator';
 import { calculators, categories } from '@/data/calculators';
 
 // Slugs that use a custom component instead of DynamicCalculatorEngine
@@ -15,6 +16,8 @@ const CUSTOM_CALCULATORS: Record<string, React.ComponentType> = {
   'scientific-calculator': ScientificCalculator,
   'gap-time-optimizer': GapTimeOptimizer,
   'fifty-minutes-calculator': FiftyMinutesCalculator,
+  'progressive-overload': ProgressiveOverloadCalculator,
+  'progressive-overload-special': ProgressiveOverloadCalculator,
 };
 
 interface CalculatorPageProps {

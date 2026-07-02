@@ -1,0 +1,1171 @@
+import { CalculatorSchema } from '@/types/calculator';
+
+export const advancedLabCalculators: CalculatorSchema[] = [
+  // â”€â”€â”€ 1. PCR Master Mix Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'pcr-master-mix',
+    slug: 'pcr-master-mix',
+    title: 'PCR Master Mix Calculator',
+    description:
+      'Calculate volumes for each PCR master mix component scaled to your number of reactions, reaction volume, and overage factor.',
+    icon: '🧬',
+    category: 'science',
+    subcategory: 'lab',
+    tags: ['PCR', 'master mix', 'molecular biology', 'lab', 'primer', 'polymerase', 'dNTP'],
+    inputs: [
+      {
+        id: 'numReactions',
+        label: 'Number of Reactions',
+        type: 'number',
+        defaultValue: 20,
+        min: 1,
+        step: 1,
+        helpText: 'Number of PCR reactions including negative controls.',
+        required: true,
+      },
+      {
+        id: 'reactionVolume',
+        label: 'Volume per Reaction',
+        type: 'number',
+        defaultValue: 25,
+        min: 5,
+        step: 1,
+        units: [{ label: 'uL', value: 'uL' }],
+        helpText: 'Volume per reaction in uL.',
+        required: true,
+      },
+      {
+        id: 'masterMixFactor',
+        label: 'Overage Factor',
+        type: 'number',
+        defaultValue: 1.1,
+        step: 0.05,
+        min: 1,
+        max: 1.3,
+        helpText: 'Overage factor (1.1 = 10% extra to account for pipetting loss).',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'buffer_total',
+        expression: 'numReactions * (reactionVolume / 25) * 5 * masterMixFactor',
+        dependencies: ['numReactions', 'reactionVolume', 'masterMixFactor'],
+      },
+      {
+        id: 'dntps_total',
+        expression: 'numReactions * (reactionVolume / 25) * 2 * masterMixFactor',
+        dependencies: ['numReactions', 'reactionVolume', 'masterMixFactor'],
+      },
+      {
+        id: 'primerF_total',
+        expression: 'numReactions * (reactionVolume / 25) * 1 * masterMixFactor',
+        dependencies: ['numReactions', 'reactionVolume', 'masterMixFactor'],
+      },
+      {
+        id: 'primerR_total',
+        expression: 'numReactions * (reactionVolume / 25) * 1 * masterMixFactor',
+        dependencies: ['numReactions', 'reactionVolume', 'masterMixFactor'],
+      },
+      {
+        id: 'polymerase_total',
+        expression: 'numReactions * (reactionVolume / 25) * 0.5 * masterMixFactor',
+        dependencies: ['numReactions', 'reactionVolume', 'masterMixFactor'],
+      },
+      {
+        id: 'water_total',
+        expression: 'numReactions * (reactionVolume / 25) * 14.5 * masterMixFactor',
+        dependencies: ['numReactions', 'reactionVolume', 'masterMixFactor'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'buffer_total',
+        label: '5x Buffer',
+        formulaRef: 'buffer_total',
+        format: 'number',
+        precision: 1,
+        suffix: ' uL 5x Buffer',
+        highlight: true,
+      },
+      {
+        id: 'dntps_total',
+        label: 'dNTPs',
+        formulaRef: 'dntps_total',
+        format: 'number',
+        precision: 1,
+        suffix: ' uL dNTPs',
+      },
+      {
+        id: 'primerF_total',
+        label: 'Forward Primer',
+        formulaRef: 'primerF_total',
+        format: 'number',
+        precision: 1,
+        suffix: ' uL Forward Primer',
+      },
+      {
+        id: 'primerR_total',
+        label: 'Reverse Primer',
+        formulaRef: 'primerR_total',
+        format: 'number',
+        precision: 1,
+        suffix: ' uL Reverse Primer',
+      },
+      {
+        id: 'polymerase_total',
+        label: 'Polymerase',
+        formulaRef: 'polymerase_total',
+        format: 'number',
+        precision: 1,
+        suffix: ' uL Polymerase',
+      },
+      {
+        id: 'water_total',
+        label: 'Nuclease-free Water',
+        formulaRef: 'water_total',
+        format: 'number',
+        precision: 1,
+        suffix: ' uL Water',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'A PCR master mix contains all reagents except the template DNA, pre-mixed for consistency across many reactions. This calculator scales a standard 25 uL reaction protocol (5 uL 5x buffer, 2 uL dNTPs, 1 uL each primer, 0.5 uL polymerase, 14.5 uL water, 1 uL template added separately) to any number of reactions and volume.',
+      howToUse:
+        'Enter the number of PCR reactions (always include at least one negative control), the reaction volume per tube, and the overage factor. The overage accounts for liquid lost during pipetting -- 1.10 (10%) is standard. Template DNA volumes are not included as they are added per tube.',
+      exampleScenario:
+        'Setting up 20 reactions at 25 uL with 1.1x overage: buffer = 22 x (25/25) x 5 = 110 uL, dNTPs = 44 uL, each primer = 22 uL, polymerase = 11 uL, water = 319 uL. Prepare the mix, aliquot 24 uL per tube, then add 1 uL template to each.',
+      proTip:
+        'Always keep polymerase on ice and add it last to the master mix. For high-fidelity applications, use hotstart polymerases that activate only during the initial denaturation step, reducing non-specific amplification. Store unused master mix at -20C. Frozen aliquots are more reliable than repeated freeze-thaw cycles.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 2. Centrifuge RPM to RCF Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'centrifuge-rpm-rcf',
+    slug: 'centrifuge-rpm-rcf',
+    title: 'Centrifuge RPM to RCF Converter',
+    description:
+      'Convert between centrifuge speed (RPM) and relative centrifugal force (RCF / x g) using rotor radius. Works in both directions.',
+    icon: '🔬',
+    category: 'science',
+    subcategory: 'lab',
+    tags: ['centrifuge', 'RPM', 'RCF', 'g-force', 'lab', 'rotor', 'centrifugation'],
+    inputs: [
+      {
+        id: 'inputValue',
+        label: 'Input Value (RPM or RCF)',
+        type: 'number',
+        defaultValue: 5000,
+        min: 1,
+        step: 100,
+        helpText: 'Enter RPM to calculate RCF, or RCF (x g) to calculate RPM.',
+        required: true,
+      },
+      {
+        id: 'rotorRadius',
+        label: 'Rotor Radius',
+        type: 'number',
+        defaultValue: 10,
+        step: 0.1,
+        min: 0.1,
+        units: [{ label: 'cm', value: 'cm' }],
+        helpText: 'Distance from rotor center to sample in cm (see rotor spec sheet).',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'rcf_out',
+        expression: '(1.118 * rotorRadius * pow(inputValue, 2)) / 100000',
+        dependencies: ['rotorRadius', 'inputValue'],
+      },
+      {
+        id: 'rpm_out',
+        expression: 'sqrt((inputValue * 100000) / (1.118 * rotorRadius))',
+        dependencies: ['inputValue', 'rotorRadius'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'rcf_out',
+        label: 'RCF (x g) -- use if input was RPM',
+        formulaRef: 'rcf_out',
+        format: 'number',
+        precision: 0,
+        suffix: ' x g (RCF)',
+        highlight: true,
+      },
+      {
+        id: 'rpm_out',
+        label: 'RPM -- use if input was RCF',
+        formulaRef: 'rpm_out',
+        format: 'number',
+        precision: 0,
+        suffix: ' RPM',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'RPM (rotations per minute) describes how fast a rotor spins, but the actual force on the sample depends on rotor size. RCF (relative centrifugal force, in x g) is rotor-independent and reproducible across any centrifuge. The formula is: RCF = 1.118 x 10^-5 x r x RPM^2, where r is rotor radius in cm.',
+      howToUse:
+        'Enter a value and your rotor radius. Both outputs are shown simultaneously: if you entered RPM, read the RCF row; if you entered RCF/x g, read the RPM row. Rotor radius (r) is typically found in your centrifuge manual or the rotor label.',
+      exampleScenario:
+        'A bench-top centrifuge with a 10 cm rotor at 5,000 RPM: RCF = 1.118 x 10 x 25,000,000 / 100,000 = 2,795 x g. To pellet bacteria (10,000 x g needed), with 10 cm rotor: RPM = sqrt(10,000 x 100,000 / (1.118 x 10)) = 9,464 RPM.',
+      proTip:
+        'Common protocol benchmarks: 300-400 x g = mammalian cell pelleting; 800 x g = platelet-rich plasma; 2,000-3,000 x g = yeast; 10,000 x g = bacterial cells; 100,000+ x g = ultracentrifugation for ribosomes and viruses. Always use RCF in published protocols for reproducibility.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 3. Serial Dilution Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'serial-dilution',
+    slug: 'serial-dilution',
+    title: 'Serial Dilution Calculator',
+    description:
+      'Calculate concentrations at each step of a serial dilution and the transfer volume needed between steps.',
+    icon: '🧪',
+    category: 'science',
+    subcategory: 'lab',
+    tags: ['serial dilution', 'concentration', 'lab', 'microbiology', 'chemistry', 'C1V1'],
+    inputs: [
+      {
+        id: 'stockConcentration',
+        label: 'Stock Concentration',
+        type: 'number',
+        defaultValue: 1000,
+        min: 0,
+        step: 1,
+        helpText: 'Starting/stock concentration (any unit: mg/mL, uM, etc.).',
+        required: true,
+      },
+      {
+        id: 'dilutionFactor',
+        label: 'Dilution Factor per Step',
+        type: 'number',
+        defaultValue: 10,
+        min: 2,
+        max: 100,
+        step: 1,
+        helpText: 'Dilution factor at each step (e.g. 10 for 1:10 dilutions).',
+        required: true,
+      },
+      {
+        id: 'numSteps',
+        label: 'Number of Dilution Steps',
+        type: 'number',
+        defaultValue: 6,
+        min: 2,
+        max: 12,
+        step: 1,
+        helpText: 'Number of dilution steps.',
+        required: true,
+      },
+      {
+        id: 'volumePerStep',
+        label: 'Diluent Volume per Step',
+        type: 'number',
+        defaultValue: 100,
+        min: 1,
+        step: 10,
+        units: [{ label: 'uL', value: 'uL' }],
+        helpText: 'Volume of diluent (e.g. water or buffer) added per step in uL.',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'c1',
+        expression: 'stockConcentration / dilutionFactor',
+        dependencies: ['stockConcentration', 'dilutionFactor'],
+      },
+      {
+        id: 'c2',
+        expression: 'c1 / dilutionFactor',
+        dependencies: ['c1', 'dilutionFactor'],
+      },
+      {
+        id: 'c3',
+        expression: 'c2 / dilutionFactor',
+        dependencies: ['c2', 'dilutionFactor'],
+      },
+      {
+        id: 'c4',
+        expression: 'c3 / dilutionFactor',
+        dependencies: ['c3', 'dilutionFactor'],
+      },
+      {
+        id: 'c5',
+        expression: 'c4 / dilutionFactor',
+        dependencies: ['c4', 'dilutionFactor'],
+      },
+      {
+        id: 'c6',
+        expression: 'c5 / dilutionFactor',
+        dependencies: ['c5', 'dilutionFactor'],
+      },
+      {
+        id: 'transferVolume',
+        expression: 'volumePerStep / (dilutionFactor - 1)',
+        dependencies: ['volumePerStep', 'dilutionFactor'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'c1',
+        label: 'Step 1 Concentration',
+        formulaRef: 'c1',
+        format: 'number',
+        precision: 4,
+        suffix: ' (Step 1)',
+        highlight: true,
+      },
+      {
+        id: 'c2',
+        label: 'Step 2 Concentration',
+        formulaRef: 'c2',
+        format: 'number',
+        precision: 4,
+        suffix: ' (Step 2)',
+      },
+      {
+        id: 'c3',
+        label: 'Step 3 Concentration',
+        formulaRef: 'c3',
+        format: 'number',
+        precision: 6,
+        suffix: ' (Step 3)',
+      },
+      {
+        id: 'c4',
+        label: 'Step 4 Concentration',
+        formulaRef: 'c4',
+        format: 'number',
+        precision: 6,
+        suffix: ' (Step 4)',
+      },
+      {
+        id: 'c5',
+        label: 'Step 5 Concentration',
+        formulaRef: 'c5',
+        format: 'number',
+        precision: 8,
+        suffix: ' (Step 5)',
+      },
+      {
+        id: 'c6',
+        label: 'Step 6 Concentration',
+        formulaRef: 'c6',
+        format: 'number',
+        precision: 8,
+        suffix: ' (Step 6)',
+      },
+      {
+        id: 'transferVolume',
+        label: 'Transfer Volume per Step',
+        formulaRef: 'transferVolume',
+        format: 'number',
+        precision: 2,
+        suffix: ' uL to transfer each step',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'A serial dilution reduces a stock solution concentration by a fixed factor at each step. It is used in microbiology (colony counts), pharmacology (dose-response curves), and immunology (antibody titration). The C1V1 = C2V2 principle governs each step.',
+      howToUse:
+        'Enter your stock concentration (in any unit -- the output will be in the same unit), dilution factor per step, number of steps, and the volume of diluent to add per step. The transfer volume is how much of the previous step to pipette into the diluent.',
+      exampleScenario:
+        'Starting at 1,000 mg/mL, 1:10 dilutions with 100 uL diluent per step: transfer 11.1 uL into 100 uL. Step 1 = 100, Step 2 = 10, Step 3 = 1, Step 4 = 0.1, Step 5 = 0.01, Step 6 = 0.001 mg/mL. A 10^6-fold range in 6 steps.',
+      proTip:
+        'Use a fresh pipette tip for every transfer step to prevent carryover contamination. For accurate colony counts in microbiology, plate steps 3-5 (10^-3 to 10^-5 for typical bacterial cultures). Log-scale plotting of concentration vs. response is standard for dose-response analysis (IC50 determination). Parallel dilutions (single-step from stock) are more accurate but use more material.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 4. Buffer pH (Henderson-Hasselbalch) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'henderson-hasselbalch',
+    slug: 'henderson-hasselbalch',
+    title: 'Buffer pH (Henderson-Hasselbalch) Calculator',
+    description:
+      'Calculate buffer solution pH using the Henderson-Hasselbalch equation from pKa and acid/base concentrations.',
+    icon: '⚗️',
+    category: 'science',
+    subcategory: 'chemistry',
+    tags: ['pH', 'buffer', 'Henderson-Hasselbalch', 'pKa', 'chemistry', 'biochemistry', 'acid-base'],
+    inputs: [
+      {
+        id: 'pKa',
+        label: 'pKa of Weak Acid',
+        type: 'number',
+        defaultValue: 4.76,
+        step: 0.01,
+        helpText: 'pKa of the weak acid. Common values: Acetic acid = 4.76, Phosphate (H2PO4-) = 7.20, Carbonate = 10.33, Tris = 8.06.',
+        required: true,
+      },
+      {
+        id: 'acidConc',
+        label: 'Weak Acid Concentration [HA]',
+        type: 'number',
+        defaultValue: 100,
+        min: 0.001,
+        step: 1,
+        units: [{ label: 'mM', value: 'mM' }],
+        helpText: 'Concentration of weak acid form [HA] in mM.',
+        required: true,
+      },
+      {
+        id: 'baseConc',
+        label: 'Conjugate Base Concentration [A-]',
+        type: 'number',
+        defaultValue: 100,
+        min: 0.001,
+        step: 1,
+        units: [{ label: 'mM', value: 'mM' }],
+        helpText: 'Concentration of conjugate base form [A-] in mM.',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'pH',
+        expression: 'pKa + log(baseConc / acidConc)',
+        dependencies: ['pKa', 'baseConc', 'acidConc'],
+      },
+      {
+        id: 'bufferRatio',
+        expression: 'baseConc / acidConc',
+        dependencies: ['baseConc', 'acidConc'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'pH',
+        label: 'Buffer pH',
+        formulaRef: 'pH',
+        format: 'number',
+        precision: 3,
+        highlight: true,
+      },
+      {
+        id: 'bufferRatio',
+        label: 'Base:Acid Ratio',
+        formulaRef: 'bufferRatio',
+        format: 'number',
+        precision: 3,
+        suffix: ':1 base:acid',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'The Henderson-Hasselbalch equation (pH = pKa + log([A-]/[HA])) is the fundamental formula for buffer chemistry. It relates the pH of a buffer to the pKa of the weak acid and the ratio of conjugate base to acid concentrations.',
+      howToUse:
+        'Enter the pKa of your weak acid (find it in the literature or on reagent datasheets), and the molar concentrations of the acid and conjugate base forms. Concentrations can be in any units as long as both use the same unit, since only the ratio matters.',
+      exampleScenario:
+        'Acetate buffer at pH 5.0: pKa = 4.76, need [A-]/[HA] = 10^(5.0-4.76) = 10^0.24 = 1.74. So mix 174 mM sodium acetate with 100 mM acetic acid. Result: pH = 4.76 + log(1.74) = 5.0.',
+      proTip:
+        'A buffer is most effective within pKa +- 1 pH unit. Outside this range, buffer capacity drops sharply. Buffer capacity is highest (best resistance to pH change) when [A-] = [HA] (ratio = 1:1, pH = pKa exactly). For physiological buffers: PBS uses phosphate (pKa 7.20), HEPES (pKa 7.55) and MOPS (pKa 7.20) are common in cell biology. Temperature affects pKa -- Tris shifts ~0.028 pH units per degree Celsius.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 5. Molar Mass Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'molar-mass',
+    slug: 'molar-mass',
+    title: 'Molar Mass Calculator',
+    description:
+      'Calculate the molar mass of a compound by entering atom counts for up to 9 common elements using IUPAC standard atomic weights.',
+    icon: '⚗️',
+    category: 'science',
+    subcategory: 'chemistry',
+    tags: ['molar mass', 'molecular weight', 'chemistry', 'stoichiometry', 'atoms', 'formula'],
+    inputs: [
+      {
+        id: 'carbonCount',
+        label: 'Carbon (C) atoms',
+        type: 'number',
+        defaultValue: 6,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 12.011 g/mol',
+        required: true,
+      },
+      {
+        id: 'hydrogenCount',
+        label: 'Hydrogen (H) atoms',
+        type: 'number',
+        defaultValue: 12,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 1.008 g/mol',
+        required: true,
+      },
+      {
+        id: 'oxygenCount',
+        label: 'Oxygen (O) atoms',
+        type: 'number',
+        defaultValue: 6,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 15.999 g/mol',
+        required: true,
+      },
+      {
+        id: 'nitrogenCount',
+        label: 'Nitrogen (N) atoms',
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 14.007 g/mol',
+        required: true,
+      },
+      {
+        id: 'sulfurCount',
+        label: 'Sulfur (S) atoms',
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 32.06 g/mol',
+        required: true,
+      },
+      {
+        id: 'phosphorusCount',
+        label: 'Phosphorus (P) atoms',
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 30.974 g/mol',
+        required: true,
+      },
+      {
+        id: 'chlorineCount',
+        label: 'Chlorine (Cl) atoms',
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 35.45 g/mol',
+        required: true,
+      },
+      {
+        id: 'sodiumCount',
+        label: 'Sodium (Na) atoms',
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 22.990 g/mol',
+        required: true,
+      },
+      {
+        id: 'calciumCount',
+        label: 'Calcium (Ca) atoms',
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        step: 1,
+        helpText: 'Atomic mass: 40.078 g/mol',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'molarMass',
+        expression:
+          'carbonCount * 12.011 + hydrogenCount * 1.008 + oxygenCount * 15.999 + nitrogenCount * 14.007 + sulfurCount * 32.06 + phosphorusCount * 30.974 + chlorineCount * 35.45 + sodiumCount * 22.990 + calciumCount * 40.078',
+        dependencies: [
+          'carbonCount',
+          'hydrogenCount',
+          'oxygenCount',
+          'nitrogenCount',
+          'sulfurCount',
+          'phosphorusCount',
+          'chlorineCount',
+          'sodiumCount',
+          'calciumCount',
+        ],
+      },
+    ],
+    outputs: [
+      {
+        id: 'molarMass',
+        label: 'Molar Mass',
+        formulaRef: 'molarMass',
+        format: 'number',
+        precision: 3,
+        suffix: ' g/mol',
+        highlight: true,
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'Molar mass (g/mol) is the mass of one mole (6.022 x 10^23 molecules) of a compound. It equals the sum of atomic masses of all atoms in the molecular formula, using IUPAC 2021 standard atomic weights.',
+      howToUse:
+        'Enter the number of atoms of each element in your molecule. For glucose (C6H12O6): C=6, H=12, O=6 -- giving 180.156 g/mol. Set all unused elements to 0.',
+      exampleScenario:
+        'Aspirin (C9H8O4): C=9, H=8, O=4 -> 9x12.011 + 8x1.008 + 4x15.999 = 108.099 + 8.064 + 63.996 = 180.159 g/mol. ATP (C10H16N5O13P3): C=10, H=16, N=5, O=13, P=3 -> 507.181 g/mol.',
+      proTip:
+        'Molar mass is used to convert between grams and moles: moles = mass(g) / molar mass. For ionic compounds, use the formula unit mass. Note: these are monoisotopic masses averaged over natural isotope abundances -- mass spectrometry uses monoisotopic masses instead. For proteins, divide molecular weight (Da) by 1000 to get kDa.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 6. Electronegativity Difference and Bond Type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'electronegativity-diff',
+    slug: 'electronegativity-diff',
+    title: 'Electronegativity Difference and Bond Type',
+    description:
+      'Calculate electronegativity difference between two elements, estimate ionic character percentage, and classify the bond type using Pauling scale values.',
+    icon: '⚡',
+    category: 'science',
+    subcategory: 'chemistry',
+    tags: ['electronegativity', 'bond type', 'ionic', 'covalent', 'Pauling', 'chemistry', 'polar'],
+    inputs: [
+      {
+        id: 'element1EN',
+        label: 'Electronegativity of Element 1',
+        type: 'number',
+        defaultValue: 2.20,
+        step: 0.01,
+        min: 0.7,
+        max: 4.0,
+        helpText: 'Pauling electronegativity. H=2.20, O=3.44, N=3.04, C=2.55, Na=0.93, Cl=3.16, F=3.98, S=2.58.',
+        required: true,
+      },
+      {
+        id: 'element2EN',
+        label: 'Electronegativity of Element 2',
+        type: 'number',
+        defaultValue: 3.44,
+        step: 0.01,
+        min: 0.7,
+        max: 4.0,
+        helpText: 'Pauling electronegativity of the second element.',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'enDiff',
+        expression: 'abs(element1EN - element2EN)',
+        dependencies: ['element1EN', 'element2EN'],
+      },
+      {
+        id: 'ionicCharacterPct',
+        expression: '(1 - exp(-0.25 * pow(enDiff, 2))) * 100',
+        dependencies: ['enDiff'],
+      },
+      {
+        id: 'bondCharacter',
+        expression: 'enDiff < 0.5 ? 1 : enDiff < 1.7 ? 2 : 3',
+        dependencies: ['enDiff'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'enDiff',
+        label: 'Electronegativity Difference',
+        formulaRef: 'enDiff',
+        format: 'number',
+        precision: 2,
+        highlight: true,
+      },
+      {
+        id: 'ionicCharacterPct',
+        label: 'Ionic Character',
+        formulaRef: 'ionicCharacterPct',
+        format: 'percentage',
+        precision: 1,
+        suffix: ' ionic character',
+      },
+      {
+        id: 'bondCharacter',
+        label: 'Bond Classification',
+        formulaRef: 'bondCharacter',
+        format: 'number',
+        precision: 0,
+        suffix: ' (1=Nonpolar Covalent, 2=Polar Covalent, 3=Ionic)',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'Electronegativity is a measure of how strongly an atom attracts shared electrons in a bond. The Pauling scale (0.7 to 3.98) is the most common. The difference in electronegativity (Delta EN) between two bonded atoms determines the bond type: nonpolar covalent (<0.5), polar covalent (0.5-1.7), or ionic (>1.7).',
+      howToUse:
+        'Enter the Pauling electronegativity values for both elements. The more electronegative element carries a partial negative charge (delta-). Common values: F=3.98, O=3.44, N=3.04, Cl=3.16, C=2.55, H=2.20, Na=0.93, K=0.82.',
+      exampleScenario:
+        'H-O bond: |2.20 - 3.44| = 1.24 -> polar covalent, 26% ionic character. Na-Cl bond: |0.93 - 3.16| = 2.23 -> ionic, 70% ionic character. C-H bond: |2.55 - 2.20| = 0.35 -> nonpolar covalent, 3% ionic character.',
+      proTip:
+        'Pauling\'s original threshold for ionic vs covalent is Delta EN > 1.7, but modern chemistry recognizes this as a continuum. Ionic character percentage uses the Pauling equation: % ionic = (1 - e^(-0.25 * Delta_EN^2)) x 100. Polyatomic molecules have bond polarity and molecular polarity (dipole moment) which can cancel in symmetric molecules like CO2.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 7. Radioactive Decay Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'radioactive-decay',
+    slug: 'radioactive-decay',
+    title: 'Radioactive Decay Calculator',
+    description:
+      'Calculate remaining activity, percent remaining, and number of half-lives elapsed for any radioactive isotope using the exponential decay law.',
+    icon: '☢️',
+    category: 'science',
+    subcategory: 'physics',
+    tags: ['radioactive', 'decay', 'half-life', 'nuclear', 'physics', 'carbon dating', 'isotope'],
+    inputs: [
+      {
+        id: 'initialActivity',
+        label: 'Initial Activity / Quantity',
+        type: 'number',
+        defaultValue: 1000,
+        min: 0,
+        step: 1,
+        helpText: 'Initial activity or quantity (Bq, Ci, grams, or any unit).',
+        required: true,
+      },
+      {
+        id: 'halfLife',
+        label: 'Half-life',
+        type: 'number',
+        defaultValue: 5730,
+        min: 0.001,
+        step: 1,
+        helpText: 'Half-life in the same time unit as time elapsed (years for C-14, days for I-131).',
+        required: true,
+      },
+      {
+        id: 'timeElapsed',
+        label: 'Time Elapsed',
+        type: 'number',
+        defaultValue: 11460,
+        min: 0,
+        step: 1,
+        helpText: 'Time elapsed in the same unit as the half-life.',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'decayConstant',
+        expression: 'ln(2) / halfLife',
+        dependencies: ['halfLife'],
+      },
+      {
+        id: 'remainingActivity',
+        expression: 'initialActivity * exp(-decayConstant * timeElapsed)',
+        dependencies: ['initialActivity', 'decayConstant', 'timeElapsed'],
+      },
+      {
+        id: 'percentRemaining',
+        expression: '(remainingActivity / initialActivity) * 100',
+        dependencies: ['remainingActivity', 'initialActivity'],
+      },
+      {
+        id: 'numHalfLives',
+        expression: 'timeElapsed / halfLife',
+        dependencies: ['timeElapsed', 'halfLife'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'remainingActivity',
+        label: 'Remaining Activity',
+        formulaRef: 'remainingActivity',
+        format: 'number',
+        precision: 4,
+        suffix: ' remaining',
+        highlight: true,
+      },
+      {
+        id: 'percentRemaining',
+        label: 'Percent Remaining',
+        formulaRef: 'percentRemaining',
+        format: 'percentage',
+        precision: 3,
+      },
+      {
+        id: 'numHalfLives',
+        label: 'Half-lives Elapsed',
+        formulaRef: 'numHalfLives',
+        format: 'number',
+        precision: 2,
+        suffix: ' half-lives elapsed',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'Radioactive decay follows the exponential law N(t) = N0 * e^(-lambda * t), where lambda = ln(2) / t_half is the decay constant. After each half-life, exactly half of the remaining atoms have decayed. This is first-order kinetics.',
+      howToUse:
+        'Enter the initial activity or amount, the half-life (in any time unit), and the elapsed time in the same unit. The calculator returns the remaining quantity, percentage remaining, and how many half-lives have passed.',
+      exampleScenario:
+        'Carbon-14 dating (half-life 5,730 years): a sample with 1,000 initial C-14 atoms after 11,460 years (2 half-lives) = 250 atoms remaining (25%). I-131 for thyroid therapy (half-life 8.02 days): after 24 days (3 half-lives) = 12.5% of initial dose remains. U-235 (703 million year half-life): after 1 billion years = 37% remains.',
+      proTip:
+        'After 10 half-lives, only 0.098% of the original activity remains -- effectively negligible for most purposes. In nuclear medicine, 5-7 half-lives is used for radioactive waste disposal clearance. For carbon dating, the practical range is up to about 50,000 years (about 8-9 half-lives of C-14), beyond which the remaining signal becomes too small to measure accurately.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 8. Beer-Lambert Law Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'beer-lambert',
+    slug: 'beer-lambert',
+    title: 'Beer-Lambert Law Calculator (Absorbance)',
+    description:
+      'Calculate absorbance, transmittance, and back-calculate concentration from percent transmittance using the Beer-Lambert law (A = epsilon * c * l).',
+    icon: '💡',
+    category: 'science',
+    subcategory: 'lab',
+    tags: ['Beer-Lambert', 'absorbance', 'transmittance', 'spectrophotometry', 'concentration', 'lab', 'optical'],
+    inputs: [
+      {
+        id: 'molarAbsorptivity',
+        label: 'Molar Absorptivity (epsilon)',
+        type: 'number',
+        defaultValue: 5000,
+        min: 0.001,
+        step: 100,
+        units: [{ label: 'L/(mol cm)', value: 'L_mol_cm' }],
+        helpText: 'Molar absorptivity in L mol-1 cm-1. Found in literature or determined by calibration.',
+        required: true,
+      },
+      {
+        id: 'concentration',
+        label: 'Concentration',
+        type: 'number',
+        defaultValue: 0.001,
+        step: 0.0001,
+        min: 0,
+        units: [{ label: 'mol/L', value: 'M' }],
+        helpText: 'Analyte concentration in mol/L (Molar).',
+        required: true,
+      },
+      {
+        id: 'pathLength',
+        label: 'Path Length',
+        type: 'number',
+        defaultValue: 1,
+        step: 0.1,
+        min: 0.001,
+        units: [{ label: 'cm', value: 'cm' }],
+        helpText: 'Cuvette path length in cm. Standard = 1 cm.',
+        required: true,
+      },
+      {
+        id: 'transmittance',
+        label: 'Transmittance (%T) -- for back-calculation',
+        type: 'number',
+        defaultValue: 10,
+        min: 0.001,
+        max: 100,
+        step: 0.1,
+        units: [{ label: '%', value: '%' }],
+        helpText: 'Enter %T to back-calculate concentration. Ignored when using forward direction.',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'absorbance',
+        expression: 'molarAbsorptivity * concentration * pathLength',
+        dependencies: ['molarAbsorptivity', 'concentration', 'pathLength'],
+      },
+      {
+        id: 'transmittancePct',
+        expression: 'pow(10, -absorbance) * 100',
+        dependencies: ['absorbance'],
+      },
+      {
+        id: 'concFromT',
+        expression: '-log(transmittance / 100) / (molarAbsorptivity * pathLength)',
+        dependencies: ['transmittance', 'molarAbsorptivity', 'pathLength'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'absorbance',
+        label: 'Absorbance (from concentration)',
+        formulaRef: 'absorbance',
+        format: 'number',
+        precision: 4,
+        suffix: ' AU',
+        highlight: true,
+      },
+      {
+        id: 'transmittancePct',
+        label: 'Transmittance (from concentration)',
+        formulaRef: 'transmittancePct',
+        format: 'number',
+        precision: 3,
+        suffix: ' %T',
+      },
+      {
+        id: 'concFromT',
+        label: 'Concentration (from %T input)',
+        formulaRef: 'concFromT',
+        format: 'number',
+        precision: 6,
+        suffix: ' mol/L',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'The Beer-Lambert Law (A = epsilon * c * l) states that absorbance is directly proportional to the concentration of the absorbing species (c), the path length through the solution (l), and the molar absorptivity (epsilon), a substance-specific constant at a given wavelength.',
+      howToUse:
+        'Forward direction: enter epsilon, concentration, and path length to get absorbance and transmittance. Reverse direction: enter a measured %T value from your spectrophotometer along with epsilon and path length to calculate the unknown concentration.',
+      exampleScenario:
+        'NADH at 340 nm (epsilon = 6,220 L mol-1 cm-1), concentration 0.1 mM (0.0001 mol/L), 1 cm cuvette: A = 6,220 x 0.0001 x 1 = 0.622 AU, %T = 23.9%. Spectrophotometer reads 31.6 %T, back-calculate: c = -log(0.316) / 6220 = 0.500 / 6220 = 0.0000804 mol/L = 80.4 uM.',
+      proTip:
+        'Beer-Lambert law is linear only in the absorbance range of approximately 0.1 to 1.0 AU. Above 1.0 AU, detector noise and stray light cause deviations. Below 0.1 AU, accuracy is limited. Dilute your sample to fall within this range for reliable results. Turbid samples (suspensions) do not follow Beer-Lambert -- scatter contributes to apparent absorbance.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 9. Protein Concentration (BCA / Bradford) Calculator â”€â”€â”€â”€â”€
+  {
+    id: 'protein-concentration',
+    slug: 'protein-concentration',
+    title: 'Protein Concentration (BCA / Bradford) Calculator',
+    description:
+      'Calculate protein concentration from spectrophotometric assay absorbance using a BSA standard curve slope and intercept.',
+    icon: '🧬',
+    category: 'science',
+    subcategory: 'lab',
+    tags: ['protein', 'BCA', 'Bradford', 'concentration', 'spectrophotometry', 'BSA', 'standard curve'],
+    inputs: [
+      {
+        id: 'absorbanceUnknown',
+        label: 'Absorbance of Unknown Sample',
+        type: 'number',
+        defaultValue: 0.45,
+        step: 0.001,
+        min: 0,
+        helpText: 'Absorbance of unknown sample at the assay wavelength (562 nm for BCA, 595 nm for Bradford).',
+        required: true,
+      },
+      {
+        id: 'absorbanceBlank',
+        label: 'Absorbance of Blank',
+        type: 'number',
+        defaultValue: 0.05,
+        step: 0.001,
+        min: 0,
+        helpText: 'Absorbance of blank control (reagent without protein).',
+        required: true,
+      },
+      {
+        id: 'slope',
+        label: 'Standard Curve Slope',
+        type: 'number',
+        defaultValue: 0.002,
+        step: 0.0001,
+        min: 0,
+        helpText: 'Slope from BSA standard curve linear regression (Absorbance per ug/mL).',
+        required: true,
+      },
+      {
+        id: 'intercept',
+        label: 'Standard Curve Intercept',
+        type: 'number',
+        defaultValue: 0.05,
+        step: 0.001,
+        helpText: 'Y-intercept from standard curve linear regression.',
+        required: true,
+      },
+      {
+        id: 'dilutionFactor',
+        label: 'Sample Dilution Factor',
+        type: 'number',
+        defaultValue: 1,
+        min: 1,
+        step: 1,
+        helpText: 'Dilution factor applied to sample before assay (1 = undiluted).',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'correctedAbs',
+        expression: 'absorbanceUnknown - absorbanceBlank',
+        dependencies: ['absorbanceUnknown', 'absorbanceBlank'],
+      },
+      {
+        id: 'concentration',
+        expression: '(correctedAbs - intercept) / slope',
+        dependencies: ['correctedAbs', 'intercept', 'slope'],
+      },
+      {
+        id: 'actualConcentration',
+        expression: 'concentration * dilutionFactor',
+        dependencies: ['concentration', 'dilutionFactor'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'actualConcentration',
+        label: 'Protein Concentration (actual)',
+        formulaRef: 'actualConcentration',
+        format: 'number',
+        precision: 2,
+        suffix: ' ug/mL protein',
+        highlight: true,
+      },
+      {
+        id: 'correctedAbs',
+        label: 'Corrected Absorbance',
+        formulaRef: 'correctedAbs',
+        format: 'number',
+        precision: 3,
+        suffix: ' AU corrected',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'The BCA (bicinchoninic acid) and Bradford assays measure protein concentration colorimetrically by comparing sample absorbance against a BSA (bovine serum albumin) standard curve. This calculator extracts concentration from the linear equation: Abs = slope x [protein] + intercept.',
+      howToUse:
+        'Run your standard curve assay with BSA standards, fit a linear trendline (e.g. in Excel or GraphPad), and note the slope and intercept. Enter the blank-subtracted absorbance of your unknown and the slope/intercept from your curve. If your sample was diluted before the assay, enter the dilution factor to get the true concentration.',
+      exampleScenario:
+        'Standard curve: slope = 0.002 AU/(ug/mL), intercept = 0.05. Unknown absorbance = 0.45, blank = 0.05. Corrected Abs = 0.40. Concentration from curve = (0.40 - 0.05) / 0.002 = 175 ug/mL. If sample was diluted 5-fold, actual = 875 ug/mL.',
+      proTip:
+        'BCA is more sensitive (1-2000 ug/mL) and compatible with reducing agents if used at low temperature. Bradford is faster but incompatible with detergents >0.1% SDS. NanoDrop (A280) is best for pure proteins (extinction coefficient-based). For crude lysates, always use a wet chemical assay (BCA/Bradford) over NanoDrop since nucleic acids absorb at 280 nm too.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // â”€â”€â”€ 10. Chromatography Flow Rate Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  {
+    id: 'chromatography-flow-rate',
+    slug: 'chromatography-flow-rate',
+    title: 'Flow Rate (Chromatography) Calculator',
+    description:
+      'Convert linear velocity to volumetric flow rate for any chromatography column diameter, and calculate volumes and time for column volume-based steps.',
+    icon: '💧',
+    category: 'science',
+    subcategory: 'lab',
+    tags: ['chromatography', 'flow rate', 'HPLC', 'FPLC', 'column', 'linear velocity', 'purification'],
+    inputs: [
+      {
+        id: 'columnDiameter',
+        label: 'Column Inner Diameter',
+        type: 'number',
+        defaultValue: 1.6,
+        step: 0.1,
+        min: 0.1,
+        units: [{ label: 'cm', value: 'cm' }],
+        helpText: 'Column inner diameter in cm.',
+        required: true,
+      },
+      {
+        id: 'linearVelocity',
+        label: 'Linear Flow Velocity',
+        type: 'number',
+        defaultValue: 150,
+        min: 1,
+        step: 10,
+        units: [{ label: 'cm/h', value: 'cm_h' }],
+        helpText: 'Linear velocity in cm/h from the method. Typical range: 100-300 cm/h.',
+        required: true,
+      },
+      {
+        id: 'columnVolume',
+        label: 'Packed Column Volume',
+        type: 'number',
+        defaultValue: 50,
+        min: 0.1,
+        step: 1,
+        units: [{ label: 'mL', value: 'mL' }],
+        helpText: 'Packed column volume (CV) in mL.',
+        required: true,
+      },
+      {
+        id: 'targetCV',
+        label: 'Target Column Volumes for Step',
+        type: 'number',
+        defaultValue: 5,
+        min: 0.1,
+        step: 0.5,
+        helpText: 'Number of column volumes (CVs) for the equilibration, wash, or elution step.',
+        required: true,
+      },
+    ],
+    formulas: [
+      {
+        id: 'columnArea',
+        expression: '3.14159 * pow(columnDiameter / 2, 2)',
+        dependencies: ['columnDiameter'],
+      },
+      {
+        id: 'flowRateMlPerMin',
+        expression: '(columnArea * linearVelocity) / 60',
+        dependencies: ['columnArea', 'linearVelocity'],
+      },
+      {
+        id: 'flowRateMlPerHr',
+        expression: 'columnArea * linearVelocity',
+        dependencies: ['columnArea', 'linearVelocity'],
+      },
+      {
+        id: 'volumeForCV',
+        expression: 'columnVolume * targetCV',
+        dependencies: ['columnVolume', 'targetCV'],
+      },
+      {
+        id: 'timeForCV',
+        expression: 'volumeForCV / flowRateMlPerMin',
+        dependencies: ['volumeForCV', 'flowRateMlPerMin'],
+      },
+    ],
+    outputs: [
+      {
+        id: 'flowRateMlPerMin',
+        label: 'Volumetric Flow Rate',
+        formulaRef: 'flowRateMlPerMin',
+        format: 'number',
+        precision: 2,
+        suffix: ' mL/min',
+        highlight: true,
+      },
+      {
+        id: 'flowRateMlPerHr',
+        label: 'Volumetric Flow Rate (mL/hr)',
+        formulaRef: 'flowRateMlPerHr',
+        format: 'number',
+        precision: 1,
+        suffix: ' mL/hr',
+      },
+      {
+        id: 'volumeForCV',
+        label: 'Volume for Target CV Step',
+        formulaRef: 'volumeForCV',
+        format: 'number',
+        precision: 1,
+        suffix: ' mL for target CV',
+      },
+      {
+        id: 'timeForCV',
+        label: 'Time for Target CV Step',
+        formulaRef: 'timeForCV',
+        format: 'number',
+        precision: 1,
+        suffix: ' min for target CV',
+      },
+    ],
+    guide: {
+      whatIsIt:
+        'In chromatography, linear velocity (cm/h) is a scale-independent measure of how fast buffer moves through the resin bed. Volumetric flow rate (mL/min) depends on column cross-sectional area. Linear velocity is used in method development so protocols transfer directly between columns of different diameters.',
+      howToUse:
+        'Enter the column inner diameter, the linear velocity from your method, the packed column volume (CV), and the number of CVs for your current step (e.g. 5 CV wash). The calculator outputs volumetric flow rate and the total volume and time for that step.',
+      exampleScenario:
+        'A 1.6 cm diameter column (area = 2.01 cm2) at 150 cm/h linear velocity: flow = 2.01 x 150 / 60 = 5.03 mL/min. With a 50 mL column, a 5 CV equilibration step = 250 mL, taking 250/5.03 = 49.7 minutes. Scaling up to a 5 cm diameter column: area = 19.6 cm2, flow = 49 mL/min at same linear velocity.',
+      proTip:
+        'Scale-up rule: keep linear velocity constant (not volumetric flow rate) to preserve separation performance. If doubling the column diameter (4x area), multiply the flow rate by 4 to maintain the same linear velocity. Monitor backpressure -- exceeding the resin pressure limit compresses the bed and ruins separation. Typical affinity resins: 100-300 cm/h max. Ion exchange: 150-400 cm/h.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+];

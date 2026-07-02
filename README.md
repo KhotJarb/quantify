@@ -12,7 +12,7 @@
 
 <br />
 
-![Version](https://img.shields.io/badge/version-v0.1.0-8b7355?style=flat-square&labelColor=1f1d19)
+![Version](https://img.shields.io/badge/version-v0.1.1-8b7355?style=flat-square&labelColor=1f1d19)
 ![Next.js](https://img.shields.io/badge/Next.js-16.2-8b7355?style=flat-square&labelColor=1f1d19&logo=nextdotjs&logoColor=ffffff)
 ![React](https://img.shields.io/badge/React-19-8b7355?style=flat-square&labelColor=1f1d19&logo=react&logoColor=ffffff)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-8b7355?style=flat-square&labelColor=1f1d19&logo=typescript&logoColor=ffffff)
@@ -231,7 +231,7 @@ Built with rigor. Designed with restraint.
 
 <br />
 
-**Quantify** · v0.1.0
+**Quantify** · v0.1.1
 
 <br />
 

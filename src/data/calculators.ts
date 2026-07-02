@@ -33,6 +33,18 @@ import { culinaryCalculators } from './culinaryCalculators';
 import { textileCalculators } from './textileCalculators';
 import { aviationCalculators } from './aviationCalculators';
 import { energyCalculators } from './energyCalculators';
+// New batch — 105 calculators across 9 new modules
+import { realEstateCalculators } from './realEstateCalculators';
+import { corporateFinanceCalculators } from './corporateFinanceCalculators';
+import { sportsBettingCalculators } from './sportsBettingCalculators';
+import { manufacturingCalculators } from './manufacturingCalculators';
+import { hospitalityCalculators } from './hospitalityCalculators';
+import { travelVisaCalculators } from './travelVisaCalculators';
+import { petCareCalculators } from './petCareCalculators';
+import { publishingCalculators } from './publishingCalculators';
+import { advancedLabCalculators } from './advancedLabCalculators';
+import { advancedStatisticsCalculators } from './advancedStatisticsCalculators';
+import { nicheCalculators } from './nicheCalculators';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Categories
@@ -67,6 +79,7 @@ export const categories: Category[] = [
       { id: 'savings', label: 'Savings & Deposits' },
       { id: 'personal', label: 'Personal Finance' },
       { id: 'taxes', label: 'Taxes' },
+      { id: 'real-estate', label: 'Real Estate' },
     ],
   },
   {
@@ -108,6 +121,7 @@ export const categories: Category[] = [
       { id: 'thermodynamics', label: 'Thermodynamics' },
       { id: 'waves', label: 'Waves & Optics' },
       { id: 'astronomy', label: 'Astronomy' },
+      { id: 'lab', label: 'Laboratory' },
     ],
   },
   {
@@ -119,6 +133,7 @@ export const categories: Category[] = [
       { id: 'mechanical', label: 'Mechanical' },
       { id: 'civil', label: 'Civil' },
       { id: 'chemical', label: 'Chemical' },
+      { id: 'manufacturing', label: 'Machining & Manufacturing' },
     ],
   },
   {
@@ -302,6 +317,7 @@ export const categories: Category[] = [
       { id: 'flight', label: 'Flight Planning' },
       { id: 'marine', label: 'Marine & Boating' },
       { id: 'navigation', label: 'Navigation' },
+      { id: 'travel-visa', label: 'Travel & Visas' },
     ],
   },
   {
@@ -312,6 +328,34 @@ export const categories: Category[] = [
       { id: 'solar', label: 'Solar & Battery' },
       { id: 'power', label: 'Power & Efficiency' },
       { id: 'sustainability', label: 'Sustainability' },
+    ],
+  },
+  {
+    id: 'sports',
+    label: 'Sports & Betting',
+    icon: '🏆',
+    subcategories: [
+      { id: 'odds-betting', label: 'Odds & Betting Math' },
+      { id: 'golf-fitness', label: 'Strength & Running' },
+      { id: 'sports-scoring', label: 'Sports Scoring' },
+    ],
+  },
+  {
+    id: 'hospitality',
+    label: 'Events & Hospitality',
+    icon: '🎉',
+    subcategories: [
+      { id: 'events', label: 'Events & Catering' },
+      { id: 'hotel', label: 'Hotel & Venue' },
+    ],
+  },
+  {
+    id: 'publishing',
+    label: 'Print & Publishing',
+    icon: '📚',
+    subcategories: [
+      { id: 'print', label: 'Print Production' },
+      { id: 'typography', label: 'Typography & Words' },
     ],
   },
 ];
@@ -900,6 +944,37 @@ const _allCalculators: CalculatorSchema[] = [
   ...healthCalculatorsPart1,
   ...healthCalculatorsPart2,
 
+  // ─── Progressive Overload Calculator (Health / Fitness & Training) ──────────
+  {
+    id: 'progressive-overload',
+    slug: 'progressive-overload',
+    title: 'Progressive Overload Calculator',
+    description:
+      'Track Volume Load and Estimated 1RM across sessions. Discover the three paths to beat your previous session — more reps, more weight, or more sets.',
+    icon: '🏋️',
+    category: 'health',
+    subcategory: 'fitness',
+    tags: [
+      'progressive overload', 'volume load', 'strength training', 'gym', 'workout',
+      '1rm', 'one rep max', 'hypertrophy', 'sets reps weight', 'muscle gain',
+      'training log', 'fitness tracker', 'overload principle', 'powerlifting',
+    ],
+    inputs: [],
+    formulas: [],
+    outputs: [],
+    guide: {
+      whatIsIt:
+        'The Progressive Overload Calculator tracks your Volume Load (Weight × Reps × Sets) and Estimated 1-Rep Max across sessions, then shows you exactly how to beat your last session. Three paths are presented: add reps, add weight, or add sets — any one of them counts as overload.',
+      howToUse:
+        '1. Enter your last session data (weight, reps, sets).\n2. Enter this session data.\n3. Review your progress status, Volume Load comparison, and e1RM.\n4. Pick one of the Three Paths to plan your next session.',
+      exampleScenario:
+        'Lat Pulldown: Week 1 — 50 kg × 10 reps × 3 sets = 1,500 kg volume. Week 2 target: 1,575 kg (+5%). Options: 11 reps (same weight/sets), 52.5 kg (same reps/sets), or 4 sets (same weight/reps). Pick what feels right.',
+      proTip:
+        'Rotate the three paths each session to prevent accommodation. A 2.5 kg increase every two weeks compounds to 65 kg added in a single year.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // General (13 calculators)
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1035,6 +1110,37 @@ const _allCalculators: CalculatorSchema[] = [
     metadata: { version: '1.0.0' },
   },
 
+  // ─── Progressive Overload Calculator (Special / Optimizer) ──────────────────
+  {
+    id: 'progressive-overload-special',
+    slug: 'progressive-overload-special',
+    title: 'Progressive Overload Calculator',
+    description:
+      'The first-of-its-kind overload engine. Track Volume Load & e1RM, see your Three Paths to progress, and unlock your Relative Strength tier — all in one session.',
+    icon: '🏋️',
+    category: 'special',
+    subcategory: 'optimizer',
+    tags: [
+      'progressive overload', 'volume load', 'strength training', 'gym', 'workout',
+      '1rm', 'one rep max', 'hypertrophy', 'sets reps weight', 'muscle gain',
+      'training optimizer', 'fitness', 'powerlifting', 'bodybuilding',
+    ],
+    inputs: [],
+    formulas: [],
+    outputs: [],
+    guide: {
+      whatIsIt:
+        'A first-of-its-kind Progressive Overload engine. Unlike basic trackers, this calculator shows three distinct paths to beat your last session, tracks both Volume Load (for hypertrophy) and Estimated 1RM (for strength), detects conflicting signals, and provides a relative strength tier calibrated to body weight.',
+      howToUse:
+        '1. Enter last session + current session data.\n2. Review status: Progressed / Maintained / Regressed.\n3. Choose from Three Paths to overload next session.\n4. Add body weight to unlock your Strength Tier.',
+      exampleScenario:
+        'Bench Press: 80 kg × 8 reps × 4 sets = 2,560 kg. Target at +5%: 2,688 kg. Paths: 9 reps (same weight), 85 kg (same reps), or 5 sets (same weight/reps). e1RM: 107.2 kg. Relative strength at 80 kg body weight: 1.34× = Intermediate.',
+      proTip:
+        'Use the conflicting-signal detection: if volume drops but e1RM rises, you shifted to higher-intensity training — this is a valid strength progression, not regression.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // Photography, Video & Audio (10 calculators)
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1089,6 +1195,61 @@ const _allCalculators: CalculatorSchema[] = [
   // Green Energy & Sustainability (10 calculators)
   // ═══════════════════════════════════════════════════════════════════════════
   ...energyCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Real Estate & Property (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...realEstateCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Corporate Finance & Accounting (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...corporateFinanceCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Sports, Betting & Performance (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...sportsBettingCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Machining, Welding & Manufacturing (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...manufacturingCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Events, Hospitality & Catering (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...hospitalityCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Travel, Aviation & Visas (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...travelVisaCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Advanced Pet Care & Veterinary (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...petCareCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Print, Publishing & Typography (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...publishingCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Advanced Laboratory & Chemistry (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...advancedLabCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Advanced Statistics & Research (5 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...advancedStatisticsCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Niche & Everyday Science (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...nicheCalculators,
 ];
 
 // ---------------------------------------------------------------------------

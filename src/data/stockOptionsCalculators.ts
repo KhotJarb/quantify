@@ -1,4 +1,4 @@
-﻿import type { CalculatorSchema } from '@/types/calculator';
+import type { CalculatorSchema } from '@/types/calculator';
 export const stockOptionsCalculators: CalculatorSchema[] = [
   // â”€â”€â”€ 1. Commodities & Futures Calculator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   {
@@ -7,7 +7,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Commodities & Futures Calculator',
     description:
       'Determine the total contract value, margin requirement, and effective leverage for commodity futures positions.',
-    icon: 'ðŸ›¢ï¸',
+    icon: '🌾',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -117,7 +117,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Stock Return & Capital Gain Tax',
     description:
       'Calculate total return, capital gains, applicable tax based on holding period and tax bracket, and your net gain after taxes.',
-    icon: 'ðŸ“Š',
+    icon: '📊',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -263,7 +263,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Stock Break Even & Profit Calculator',
     description:
       'Find the break-even price per share after commissions and the sale price needed to reach a target profit.',
-    icon: 'âš–ï¸',
+    icon: '⚖️',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -385,7 +385,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Stock Price Average Calculator',
     description:
       'Compute the weighted average cost per share across up to three separate purchase lots.',
-    icon: 'ðŸ“‰',
+    icon: '📈',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -519,7 +519,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Dividend Tax Calculator',
     description:
       'Estimate taxes on dividend income by separating qualified and ordinary dividends at their respective tax rates.',
-    icon: 'ðŸ›ï¸',
+    icon: '💸',
     category: 'finance',
     subcategory: 'dividends',
     tags: [
@@ -665,7 +665,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Dividend Calculator',
     description:
       'Project current and future dividend income based on share count, dividend per share, and an expected dividend growth rate.',
-    icon: 'ðŸ’°',
+    icon: '💰',
     category: 'finance',
     subcategory: 'dividends',
     tags: [
@@ -811,7 +811,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Gordon Growth Model (DDM)',
     description:
       'Estimate the intrinsic value of a stock using the Dividend Discount Model for a stock with dividends growing at a constant rate forever.',
-    icon: 'ðŸŒ±',
+    icon: '🌱',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -901,7 +901,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Non-Constant Growth Stock Valuation',
     description:
       'Value a stock with an initial high-growth phase followed by stable perpetual growth using a two-stage Dividend Discount Model.',
-    icon: 'ðŸ“ˆ',
+    icon: '📊',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1056,7 +1056,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'CAPM Calculator',
     description:
       'Calculate the expected return of an asset using the Capital Asset Pricing Model based on the risk-free rate, market return, and beta.',
-    icon: 'ðŸ“',
+    icon: '🎯',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1159,7 +1159,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Expected Return Calculator',
     description:
       'Compute the probability-weighted expected return, variance, and standard deviation across three economic scenarios (bull, base, bear).',
-    icon: 'ðŸŽ¯',
+    icon: '🎲',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1302,7 +1302,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Holding Period Return Calculator',
     description:
       'Calculate the total holding period return and annualized return for an investment including income (dividends) received.',
-    icon: 'â±ï¸',
+    icon: '⏱️',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1401,7 +1401,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'WACC Calculator',
     description:
       'Calculate the Weighted Average Cost of Capital considering the cost and proportion of both equity and debt financing with tax shield.',
-    icon: 'ðŸ—ï¸',
+    icon: '💼',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1541,7 +1541,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Pivot Point Calculator',
     description:
       'Calculate classic pivot points and three levels of support and resistance from the prior period\'s high, low, and close.',
-    icon: 'ðŸ”„',
+    icon: '🔄',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1688,7 +1688,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Fibonacci Retracement Calculator',
     description:
       'Calculate key Fibonacci retracement levels (23.6%, 38.2%, 50%, 61.8%, 78.6%) from a swing high and swing low.',
-    icon: 'ðŸš',
+    icon: '🌀',
     category: 'finance',
     subcategory: 'stocks',
     tags: [
@@ -1815,7 +1815,7 @@ export const stockOptionsCalculators: CalculatorSchema[] = [
     title: 'Black-Scholes Option Pricing Calculator',
     description:
       'Price European call and put options using the Black-Scholes-Merton model with the cumulative normal distribution function.',
-    icon: 'ðŸŽ²',
+    icon: '🎰',
     category: 'finance',
     subcategory: 'options',
     tags: [

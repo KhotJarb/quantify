@@ -1159,6 +1159,11 @@ small {
   .search-bar__shortcut {
     display: none;
   }
+
+  /* Hide quick-filter tags on mobile — too cramped */
+  .search-tags {
+    display: none;
+  }
 }
 
 /* --- Animations --- */

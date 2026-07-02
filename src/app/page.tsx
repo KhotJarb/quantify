@@ -17,9 +17,19 @@ export default function DashboardPage() {
   const [searchResults, setSearchResults] = useState<CalculatorSchema[] | null>(null);
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const { favorites, toggle: toggleFavorite } = useFavorites();
 
   const showingFavorites = activeCategory === FAVORITES_ID;
+
+  const toggleExpand = useCallback((categoryId: string) => {
+    setExpandedCategories((prev) => {
+      const next = new Set(prev);
+      next.has(categoryId) ? next.delete(categoryId) : next.add(categoryId);
+      return next;
+    });
+  }, []);
 
   /* --- Filtering logic --- */
   const filteredCalculators = useMemo(() => {
@@ -88,6 +98,12 @@ export default function DashboardPage() {
         onSubcategorySelect={handleSubcategorySelect}
         favoritesCount={favorites.size}
         favoritesId={FAVORITES_ID}
+        collapsed={sidebarCollapsed}
+        onCollapsedChange={setSidebarCollapsed}
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
+        expandedCategories={expandedCategories}
+        onToggleExpand={toggleExpand}
       />
 
       {mobileMenuOpen && (
@@ -97,7 +113,7 @@ export default function DashboardPage() {
         />
       )}
 
-      <main className="app-main">
+      <main className={`app-main${sidebarCollapsed ? ' app-main--collapsed' : ''}`}>
         <header className="app-header">
           <button
             className="mobile-menu-btn"
@@ -171,7 +187,7 @@ export default function DashboardPage() {
               <p className="empty-state__desc">
                 {showingFavorites
                   ? 'Pin any calculator by clicking the ☆ star in its corner.'
-                  : 'Try adjusting your search or filters to find what you\'re looking for.'}
+                  : "Try adjusting your search or filters to find what you're looking for."}
               </p>
             </div>
           )}

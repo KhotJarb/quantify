@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import type { Category } from '@/types/calculator';
 
@@ -12,6 +11,15 @@ interface SidebarProps {
   onSubcategorySelect: (categoryId: string, subcategoryId: string | null) => void;
   favoritesCount?: number;
   favoritesId?: string;
+  // collapse (desktop)
+  collapsed: boolean;
+  onCollapsedChange: (v: boolean) => void;
+  // mobile drawer
+  mobileOpen: boolean;
+  onMobileClose: () => void;
+  // expanded subcategory rows
+  expandedCategories: Set<string>;
+  onToggleExpand: (id: string) => void;
 }
 
 export default function Sidebar({
@@ -22,21 +30,13 @@ export default function Sidebar({
   onSubcategorySelect,
   favoritesCount = 0,
   favoritesId = '__favorites__',
+  collapsed,
+  onCollapsedChange,
+  mobileOpen,
+  onMobileClose,
+  expandedCategories,
+  onToggleExpand,
 }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
-
-  const toggleExpand = (categoryId: string) => {
-    setExpandedCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(categoryId)) {
-        next.delete(categoryId);
-      } else {
-        next.add(categoryId);
-      }
-      return next;
-    });
-  };
 
   const handleCategoryClick = (categoryId: string) => {
     if (activeCategory === categoryId) {
@@ -44,7 +44,8 @@ export default function Sidebar({
     } else {
       onCategorySelect(categoryId);
     }
-    toggleExpand(categoryId);
+    onToggleExpand(categoryId);
+    onMobileClose();
   };
 
   const handleSubcategoryClick = (categoryId: string, subcategoryId: string) => {
@@ -53,11 +54,12 @@ export default function Sidebar({
     } else {
       onSubcategorySelect(categoryId, subcategoryId);
     }
+    onMobileClose();
   };
 
   return (
     <>
-      <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
+      <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''} ${mobileOpen ? 'sidebar--mobile-open' : ''}`}>
         {/* Brand */}
         <div className="sidebar__brand">
           <div className="sidebar__brand-logo">
@@ -74,7 +76,7 @@ export default function Sidebar({
           <div className="sidebar__section">
             <button
               className={`sidebar__category-btn ${activeCategory === favoritesId ? 'sidebar__category-btn--active' : ''}`}
-              onClick={() => onCategorySelect(favoritesId)}
+              onClick={() => { onCategorySelect(favoritesId); onMobileClose(); }}
               title="Favorites"
             >
               <span className="sidebar__category-icon">★</span>
@@ -85,11 +87,11 @@ export default function Sidebar({
             </button>
           </div>
 
-          {/* All calculators button */}
+          {/* All calculators */}
           <div className="sidebar__section">
             <button
               className={`sidebar__category-btn ${activeCategory === null ? 'sidebar__category-btn--active' : ''}`}
-              onClick={() => onCategorySelect(null)}
+              onClick={() => { onCategorySelect(null); onMobileClose(); }}
               title="All Calculators"
             >
               <span className="sidebar__category-icon">📊</span>
@@ -111,14 +113,11 @@ export default function Sidebar({
                 >
                   <span className="sidebar__category-icon">{category.icon}</span>
                   <span className="sidebar__category-label">{category.label}</span>
-                  <span
-                    className={`sidebar__category-chevron ${isExpanded ? 'sidebar__category-chevron--open' : ''}`}
-                  >
+                  <span className={`sidebar__category-chevron ${isExpanded ? 'sidebar__category-chevron--open' : ''}`}>
                     ›
                   </span>
                 </button>
 
-                {/* Subcategories */}
                 <div className={`sidebar__subcategories ${isExpanded ? 'sidebar__subcategories--open' : ''}`}>
                   {category.subcategories.map((sub) => (
                     <button
@@ -139,10 +138,10 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* Collapse toggle */}
+        {/* Collapse toggle (desktop only) */}
         <button
           className="sidebar__toggle"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => onCollapsedChange(!collapsed)}
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? '→' : '←'}

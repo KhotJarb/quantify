@@ -45,6 +45,28 @@ import { publishingCalculators } from './publishingCalculators';
 import { advancedLabCalculators } from './advancedLabCalculators';
 import { advancedStatisticsCalculators } from './advancedStatisticsCalculators';
 import { nicheCalculators } from './nicheCalculators';
+// Expanded batch — missing modules restored
+import { advancedClinicalCalculators } from './advancedClinicalCalculators';
+import { advancedFitnessCalculators } from './advancedFitnessCalculators';
+import { audioMusicCalculators } from './audioMusicCalculators';
+import { automotiveTuningCalculators } from './automotiveTuningCalculators';
+import { biohackingDietCalculators } from './biohackingDietCalculators';
+import { cloudDevOpsCalculators } from './cloudDevOpsCalculators';
+import { educationCalculators } from './educationCalculators';
+import { esotericAstrologyCalculators } from './esotericAstrologyCalculators';
+import { fireFinanceCalculators } from './fireFinanceCalculators';
+import { formulationsCalculators } from './formulationsCalculators';
+import { geographyGISCalculators } from './geographyGISCalculators';
+import { heavyIndustryCalculators } from './heavyIndustryCalculators';
+import { homeGardenCalculators } from './homeGardenCalculators';
+import { hvacFluidCalculators } from './hvacFluidCalculators';
+import { legalAdminCalculators } from './legalAdminCalculators';
+import { makerElectronicsCalculators } from './makerElectronicsCalculators';
+import { outdoorsBallisticsCalculators } from './outdoorsBallisticsCalculators';
+import { socialMediaCalculators2 } from './socialMediaCalculators2';
+import { tabletopGamingCalcs } from './tabletopGamingCalcs';
+import { travelNomadCalculators } from './travelNomadCalculators';
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Categories
@@ -80,6 +102,7 @@ export const categories: Category[] = [
       { id: 'personal', label: 'Personal Finance' },
       { id: 'taxes', label: 'Taxes' },
       { id: 'real-estate', label: 'Real Estate' },
+      { id: 'fire', label: 'FIRE & Financial Independence' },
     ],
   },
   {
@@ -95,6 +118,8 @@ export const categories: Category[] = [
       { id: 'clinical', label: 'Clinical' },
       { id: 'reproductive', label: 'Reproductive Health' },
       { id: 'fitness', label: 'Fitness & Training' },
+      { id: 'advanced-fitness', label: 'Advanced Fitness & Sports Science' },
+      { id: 'biohacking', label: 'Biohacking & Longevity' },
     ],
   },
   {
@@ -122,6 +147,7 @@ export const categories: Category[] = [
       { id: 'waves', label: 'Waves & Optics' },
       { id: 'astronomy', label: 'Astronomy' },
       { id: 'lab', label: 'Laboratory' },
+      { id: 'geography', label: 'Geography & GIS' },
     ],
   },
   {
@@ -134,6 +160,8 @@ export const categories: Category[] = [
       { id: 'civil', label: 'Civil' },
       { id: 'chemical', label: 'Chemical' },
       { id: 'manufacturing', label: 'Machining & Manufacturing' },
+      { id: 'fluid', label: 'Fluid & HVAC' },
+      { id: 'maker', label: 'Maker & Electronics' },
     ],
   },
   {
@@ -146,6 +174,7 @@ export const categories: Category[] = [
       { id: 'roofing', label: 'Roofing & Structure' },
       { id: 'lumber', label: 'Lumber & Materials' },
       { id: 'hvac', label: 'HVAC & Electrical' },
+      { id: 'landscaping', label: 'Home, Garden & Landscaping' },
     ],
   },
   {
@@ -158,6 +187,7 @@ export const categories: Category[] = [
       { id: 'ecommerce', label: 'E-commerce & Fees' },
       { id: 'metrics', label: 'Business Metrics' },
       { id: 'accounting', label: 'Accounting & Assets' },
+      { id: 'social-media', label: 'Social Media & Creator Economy' },
     ],
   },
   {
@@ -170,6 +200,7 @@ export const categories: Category[] = [
       { id: 'security', label: 'Security' },
       { id: 'display', label: 'Display & Media' },
       { id: 'tools', label: 'Developer Tools' },
+      { id: 'cloud', label: 'Cloud, DevOps & SaaS' },
     ],
   },
   {
@@ -197,6 +228,7 @@ export const categories: Category[] = [
       { id: 'fuel', label: 'Fuel & Efficiency' },
       { id: 'shipping', label: 'Shipping & Freight' },
       { id: 'travel-calc', label: 'Travel & Navigation' },
+      { id: 'tuning', label: 'Tuning & Performance' },
     ],
   },
   {
@@ -217,6 +249,7 @@ export const categories: Category[] = [
     subcategories: [
       { id: 'productivity', label: 'Productivity' },
       { id: 'optimizer', label: 'Optimizers' },
+      { id: 'esoteric', label: 'Esoteric & Astrology' },
     ],
   },
   {
@@ -287,6 +320,7 @@ export const categories: Category[] = [
       { id: 'performance', label: 'Performance & Rank' },
       { id: 'streaming', label: 'Streaming & PC' },
       { id: 'rpg', label: 'RPG & Gacha' },
+      { id: 'tabletop', label: 'Tabletop & Board Games' },
     ],
   },
   {
@@ -297,6 +331,7 @@ export const categories: Category[] = [
       { id: 'baking', label: 'Baking & Pastry' },
       { id: 'brewing', label: 'Brewing & Drinks' },
       { id: 'scaling', label: 'Scaling & Costing' },
+      { id: 'formulations', label: 'DIY Formulations & Chemistry' },
     ],
   },
   {
@@ -338,6 +373,7 @@ export const categories: Category[] = [
       { id: 'odds-betting', label: 'Odds & Betting Math' },
       { id: 'golf-fitness', label: 'Strength & Running' },
       { id: 'sports-scoring', label: 'Sports Scoring' },
+      { id: 'outdoor', label: 'Outdoors & Ballistics' },
     ],
   },
   {
@@ -356,6 +392,30 @@ export const categories: Category[] = [
     subcategories: [
       { id: 'print', label: 'Print Production' },
       { id: 'typography', label: 'Typography & Words' },
+    ],
+  },
+  {
+    id: 'education',
+    label: 'Education & Learning',
+    icon: '🎓',
+    subcategories: [
+      { id: 'student-tools', label: 'Student Tools' },
+      { id: 'student-finance', label: 'Student Finance' },
+      { id: 'grades', label: 'Grades & GPA' },
+      { id: 'exams', label: 'Exam Prep' },
+      { id: 'study-planning', label: 'Study Planning' },
+    ],
+  },
+  {
+    id: 'legal',
+    label: 'Legal & Admin',
+    icon: '⚖️',
+    subcategories: [
+      { id: 'family-law', label: 'Family Law' },
+      { id: 'employment-law', label: 'Employment Law' },
+      { id: 'contracts', label: 'Contracts & Compliance' },
+      { id: 'trade-commerce', label: 'Trade & Commerce' },
+      { id: 'penalties', label: 'Fines & Penalties' },
     ],
   },
 ];
@@ -777,6 +837,55 @@ const _allCalculators: CalculatorSchema[] = [
     },
     metadata: { version: '1.0.0' },
   },
+
+  // -----------------------------------------------------------------------
+  // Advanced Calculator (Beta) — General
+  // -----------------------------------------------------------------------
+  {
+    id: 'advanced-calculator',
+    slug: 'advanced-calculator',
+    title: 'Advanced Calculator (Beta)',
+    description: 'A multi-mode scientific calculator with symbolic CAS (mathjs), step-by-step solutions, trigonometry, logarithms, and photo math. Beta — actively improving.',
+    icon: '🧮',
+    category: 'general',
+    subcategory: 'basic',
+    tags: ['advanced', 'scientific', 'trig', 'calculus', 'step-by-step', 'photo math', 'sin', 'cos', 'log', 'integral', 'symbolic', 'CAS'],
+    inputs: [],
+    formulas: [],
+    outputs: [],
+    guide: {
+      whatIsIt: 'A professional-grade multi-mode calculator covering arithmetic, functions, trigonometry, and calculus with step-by-step solutions powered by mathjs CAS.',
+      howToUse: 'Type any expression (numeric or symbolic with variables x, y, z) or use the on-screen keyboard. Switch between Basic, Functions, Trig, and Calculus modes. Press = or Enter to compute.',
+      exampleScenario: 'A student enters sin(30°) + log(100). Switch to Trig mode, enter sin(30), add log(100), press =. The result 1.5 is shown with detailed step-by-step breakdown.',
+      proTip: 'Symbolic expressions like "2x + 3x" automatically simplify to "5x". Variables stay in the result — no need to assign values.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
+  // -----------------------------------------------------------------------
+  // Advanced Calculator (Beta) — Math
+  // -----------------------------------------------------------------------
+  {
+    id: 'advanced-calculator-math',
+    slug: 'advanced-calculator-math',
+    title: 'Advanced Calculator (Beta)',
+    description: 'A multi-mode scientific calculator with symbolic CAS (mathjs), step-by-step solutions, trigonometry, logarithms, and photo math. Beta — actively improving.',
+    icon: '🧮',
+    category: 'math',
+    subcategory: 'algebra',
+    tags: ['advanced', 'scientific', 'trig', 'calculus', 'step-by-step', 'symbolic', 'CAS', 'algebra', 'sin', 'cos', 'log'],
+    inputs: [],
+    formulas: [],
+    outputs: [],
+    guide: {
+      whatIsIt: 'A professional-grade multi-mode calculator with symbolic algebra powered by mathjs CAS — handles variables, index laws, simplification, and numeric evaluation with step-by-step breakdown.',
+      howToUse: 'Type an expression or use the on-screen keyboard. Switch between keyboard modes and press = to solve. Symbolic results (with variables) are simplified automatically.',
+      exampleScenario: 'Enter "13z * 12z^(1/2)" — the CAS simplifies it to "156 * z^(3/2)" automatically, showing the product and index law steps.',
+      proTip: 'Tap the history icon to revisit and restore any of your last 50 calculations.',
+    },
+    metadata: { version: '1.0.0' },
+  },
+
 
   // -----------------------------------------------------------------------
   // 7. Calorie Calculator (BMR — Mifflin-St Jeor)
@@ -1250,6 +1359,106 @@ const _allCalculators: CalculatorSchema[] = [
   // Niche & Everyday Science (10 calculators)
   // ═══════════════════════════════════════════════════════════════════════════
   ...nicheCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HVAC, Fluid & Thermodynamics (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...hvacFluidCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Audio & Music Production (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...audioMusicCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Advanced Clinical & Medical (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...advancedClinicalCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Outdoors, Ballistics & Sports (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...outdoorsBallisticsCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Esoteric, Astrology & Entertainment (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...esotericAstrologyCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Geography, GIS & Navigation (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...geographyGISCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Maker & Electronics (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...makerElectronicsCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Tabletop & Board Games (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...tabletopGamingCalcs,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DIY Formulations & Culinary Chemistry (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...formulationsCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Heavy Industry, Fleet & Industrial Engineering (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...heavyIndustryCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Advanced Fitness & Sports Science (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...advancedFitnessCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Automotive Tuning & Performance (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...automotiveTuningCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Biohacking, Longevity & Diet Science (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...biohackingDietCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Cloud, DevOps & SaaS Metrics (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...cloudDevOpsCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Education & Academic Tools (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...educationCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FIRE & Financial Independence (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...fireFinanceCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Home, Garden & DIY (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...homeGardenCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Legal, Admin & Compliance (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...legalAdminCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Social Media & Creator Economy (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...socialMediaCalculators2,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Travel & Digital Nomad (10 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...travelNomadCalculators,
 ];
 
 // ---------------------------------------------------------------------------

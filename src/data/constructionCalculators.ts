@@ -8,7 +8,7 @@ export const constructionCalculators: CalculatorSchema[] = [
     title: 'Concrete Volume Calculator',
     description:
       'Calculate the volume of concrete needed for a slab in cubic yards and cubic feet, with automatic 10% waste factor and 80 lb bag count.',
-    icon: '🏗️',
+    icon: '🧱',
     category: 'construction',
     subcategory: 'concrete',
     tags: ['concrete', 'slab', 'cubic yards', 'cubic feet', 'cement', 'foundation', 'diy'],
@@ -1343,7 +1343,7 @@ export const constructionCalculators: CalculatorSchema[] = [
     title: 'Wallpaper Calculator',
     description:
       'Calculate the number of wallpaper rolls needed for a room, accounting for roll dimensions, door and window deductions, and a 10% installation waste allowance.',
-    icon: '🖼️',
+    icon: '📄',
     category: 'construction',
     subcategory: 'interior',
     tags: ['wallpaper', 'rolls', 'interior', 'remodel', 'room', 'wall covering', 'diy'],

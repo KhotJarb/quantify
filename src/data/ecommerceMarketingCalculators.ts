@@ -873,7 +873,7 @@ export const ecommerceMarketingCalculators: CalculatorSchema[] = [
     title: 'ROAS Calculator',
     description:
       'Calculate Return on Ad Spend (ROAS) and distinguish it from ROI to evaluate advertising campaign profitability.',
-    icon: '🎯',
+    icon: '💹',
     category: 'business',
     subcategory: 'advertising',
     tags: ['roas', 'return on ad spend', 'roi', 'advertising', 'google ads', 'facebook ads', 'profitability'],

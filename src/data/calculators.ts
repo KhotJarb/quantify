@@ -66,6 +66,7 @@ import { outdoorsBallisticsCalculators } from './outdoorsBallisticsCalculators';
 import { socialMediaCalculators2 } from './socialMediaCalculators2';
 import { tabletopGamingCalcs } from './tabletopGamingCalcs';
 import { travelNomadCalculators } from './travelNomadCalculators';
+import { specialistCalculators } from './specialistCalculators';
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -103,6 +104,7 @@ export const categories: Category[] = [
       { id: 'taxes', label: 'Taxes' },
       { id: 'real-estate', label: 'Real Estate' },
       { id: 'fire', label: 'FIRE & Financial Independence' },
+      { id: 'macroeconomics', label: 'Macroeconomics & Strategy' },
     ],
   },
   {
@@ -157,7 +159,7 @@ export const categories: Category[] = [
     subcategories: [
       { id: 'electrical', label: 'Electrical' },
       { id: 'mechanical', label: 'Mechanical' },
-      { id: 'civil', label: 'Civil' },
+      { id: 'civil', label: 'Civil Engineering' },
       { id: 'chemical', label: 'Chemical' },
       { id: 'manufacturing', label: 'Machining & Manufacturing' },
       { id: 'fluid', label: 'Fluid & HVAC' },
@@ -201,6 +203,8 @@ export const categories: Category[] = [
       { id: 'display', label: 'Display & Media' },
       { id: 'tools', label: 'Developer Tools' },
       { id: 'cloud', label: 'Cloud, DevOps & SaaS' },
+      { id: 'data-science', label: 'Data Science & ML' },
+      { id: 'text-processing', label: 'Text & String Processing' },
     ],
   },
   {
@@ -300,6 +304,7 @@ export const categories: Category[] = [
       { id: 'inventory', label: 'Inventory & Stock' },
       { id: 'freight', label: 'Freight & Shipping' },
       { id: 'packaging', label: 'Packaging & Volume' },
+      { id: 'trade', label: 'International Trade' },
     ],
   },
   {
@@ -1459,6 +1464,14 @@ const _allCalculators: CalculatorSchema[] = [
   // Travel & Digital Nomad (10 calculators)
   // ═══════════════════════════════════════════════════════════════════════════
   ...travelNomadCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Specialist Calculators — Civil Engineering, Data Science, Electrical Power,
+  // Macroeconomics, Pharmacokinetics, Logistics/Trade, Fluid Thermodynamics,
+  // Text Processing (33 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...specialistCalculators,
+
 ];
 
 // ---------------------------------------------------------------------------

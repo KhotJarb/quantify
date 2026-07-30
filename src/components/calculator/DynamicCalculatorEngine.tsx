@@ -368,7 +368,7 @@ function GuidePanel({ guide }: { guide: UsageGuide }) {
                 <span className="calc-guide__section-icon">{section.icon}</span>
                 {section.title}
               </h3>
-              <p className="calc-guide__section-content">{section.content}</p>
+              <p className="calc-guide__section-content" style={{ whiteSpace: 'pre-wrap' }}>{section.content}</p>
             </div>
           ))}
         </div>

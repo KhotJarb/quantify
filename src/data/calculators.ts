@@ -67,6 +67,7 @@ import { socialMediaCalculators2 } from './socialMediaCalculators2';
 import { tabletopGamingCalcs } from './tabletopGamingCalcs';
 import { travelNomadCalculators } from './travelNomadCalculators';
 import { specialistCalculators } from './specialistCalculators';
+import { ldlCalculators } from './ldlCalculator';
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1471,6 +1472,13 @@ const _allCalculators: CalculatorSchema[] = [
   // Text Processing (33 calculators)
   // ═══════════════════════════════════════════════════════════════════════════
   ...specialistCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LDL Cholesterol Calculator — dual Friedewald + Sampson 2020 equations
+  // Full lipid panel: Non-HDL, VLDL, AIP, atherogenic ratios, risk scoring
+  // Category: health → cardiovascular
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...ldlCalculators,
 
 ];
 

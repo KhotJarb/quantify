@@ -9,6 +9,7 @@ import GapTimeOptimizer from '@/components/calculator/GapTimeOptimizer';
 import FiftyMinutesCalculator from '@/components/calculator/FiftyMinutesCalculator';
 import ProgressiveOverloadCalculator from '@/components/calculator/ProgressiveOverloadCalculator';
 import AdvancedCalculator from '@/components/calculator/AdvancedCalculator';
+import LDLCalculatorEnhanced from '@/components/calculator/LDLCalculatorEnhanced';
 import { calculators, categories } from '@/data/calculators';
 
 // Slugs that use a custom component instead of DynamicCalculatorEngine
@@ -21,6 +22,7 @@ const CUSTOM_CALCULATORS: Record<string, React.ComponentType> = {
   'progressive-overload-special': ProgressiveOverloadCalculator,
   'advanced-calculator': AdvancedCalculator,
   'advanced-calculator-math': AdvancedCalculator,
+  'ldl-cholesterol-enhanced': LDLCalculatorEnhanced,
 };
 
 interface CalculatorPageProps {

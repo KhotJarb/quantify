@@ -1322,6 +1322,8 @@ small {
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
+  min-width: 0; /* prevent grid blowout */
+  overflow: hidden;
 }
 
 .calc-guide__section-title {
@@ -1345,6 +1347,8 @@ small {
   line-height: 1.65;
   color: var(--text-primary);
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 @media (max-width: 768px) {

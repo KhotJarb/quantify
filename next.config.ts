@@ -4,6 +4,40 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  async redirects() {
+    return [
+      {
+        source: '/calculator/ldl-cholesterol-enhanced',
+        destination: '/calculator/ldl-cholesterol-calculator',
+        permanent: true,
+      },
+      {
+        source: '/calculator/compound-interest-enhanced',
+        destination: '/calculator/compound-interest',
+        permanent: true,
+      },
+      {
+        source: '/calculator/bmi-calculator-enhanced',
+        destination: '/calculator/bmi-calculator',
+        permanent: true,
+      },
+      {
+        source: '/calculator/ohms-law-power-calculator',
+        destination: '/calculator/ohms-law',
+        permanent: true,
+      },
+      {
+        source: '/calculator/progressive-overload-special',
+        destination: '/calculator/progressive-overload',
+        permanent: true,
+      },
+      {
+        source: '/calculator/advanced-calculator-math',
+        destination: '/calculator/advanced-calculator',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     const commonHeaders = [
       { key: 'X-Content-Type-Options', value: 'nosniff' },

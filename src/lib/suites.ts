@@ -101,14 +101,12 @@ export const CUSTOM_CALCULATOR_SLUGS = new Set<string>([
   'gap-time-optimizer',
   'fifty-minutes-calculator',
   'progressive-overload',
-  'progressive-overload-special',
   'advanced-calculator',
-  'advanced-calculator-math',
-  'ldl-cholesterol-enhanced',
+  'ldl-cholesterol-calculator',
 ]);
 
 export const FEATURED_INSTRUMENT_SLUGS: string[] = [
-  'ldl-cholesterol-enhanced',
+  'ldl-cholesterol-calculator',
   'compound-interest',
   'loan-emi',
   'progressive-overload',
@@ -145,7 +143,7 @@ export const SUITES: SuiteDefinition[] = [
     tier: 'flagship',
     categoryIds: ['health', 'medical'],
     featuredSlugs: [
-      'ldl-cholesterol-enhanced',
+      'ldl-cholesterol-calculator',
       'progressive-overload',
       'bmi-calculator',
     ],

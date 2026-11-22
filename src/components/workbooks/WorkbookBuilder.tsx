@@ -210,6 +210,7 @@ const TEMPLATES: WorkbookTemplate[] = [
       const s2 = schemas['fire-number-calculator'];
       const d1 = getSchemaDefaults(s1, {
         principal: '120000',
+        monthlyContribution: '500',
         annualRate: '8',
         compoundingFrequency: '12',
         years: '15',
@@ -247,12 +248,13 @@ const TEMPLATES: WorkbookTemplate[] = [
   {
     id: 'solar-to-compound',
     name: 'Solar Savings → Reinvestment',
-    summary: 'Takes Year-1 solar electricity savings and models 20-year compounded value.',
+    summary: 'Converts annual solar electricity savings into monthly contributions compounded over 20 years.',
     buildSteps: (schemas): WorkbookStep[] => {
       const s1 = schemas['solar-payback'];
       const s2 = schemas['compound-interest'];
       const d1 = getSchemaDefaults(s1);
       const d2 = getSchemaDefaults(s2, {
+        principal: '0',
         annualRate: '7',
         compoundingFrequency: '12',
         years: '20',
@@ -273,10 +275,10 @@ const TEMPLATES: WorkbookTemplate[] = [
           values: d2.values,
           selectedUnits: d2.selectedUnits,
           bindings: {
-            principal: {
+            monthlyContribution: {
               fromStepId: 'step-1',
               outputFormulaRef: 'annualSavings',
-              scale: '1',
+              scale: '1/12',
             },
           },
         },

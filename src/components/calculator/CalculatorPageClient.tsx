@@ -59,10 +59,8 @@ const CUSTOM_CALCULATORS: Record<string, React.ComponentType> = {
   'gap-time-optimizer': GapTimeOptimizer,
   'fifty-minutes-calculator': FiftyMinutesCalculator,
   'progressive-overload': ProgressiveOverloadCalculator,
-  'progressive-overload-special': ProgressiveOverloadCalculator,
   'advanced-calculator': AdvancedCalculator,
-  'advanced-calculator-math': AdvancedCalculator,
-  'ldl-cholesterol-enhanced': LDLCalculatorEnhanced,
+  'ldl-cholesterol-calculator': LDLCalculatorEnhanced,
 };
 
 interface CalculatorPageClientProps {

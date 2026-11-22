@@ -439,20 +439,28 @@ const _allCalculators: CalculatorSchema[] = [
     slug: 'compound-interest',
     title: 'Compound Interest',
     description:
-      'Calculate the future value of an investment with compound interest over time.',
+      'Calculate compound interest with optional recurring monthly contributions, flexible compounding frequencies, and a full breakdown of total contributions vs. interest earned.',
     icon: '📈',
     category: 'finance',
     subcategory: 'investments',
-    tags: ['interest', 'savings', 'investment', 'compound'],
+    tags: ['interest', 'savings', 'investment', 'compound', 'contribution', 'growth'],
     inputs: [
       {
         id: 'principal',
-        label: 'Principal Amount ($)',
+        label: 'Initial Principal ($)',
         type: 'number',
         min: 0,
-        defaultValue: 1000,
+        defaultValue: 10000,
         placeholder: 'e.g. 10000',
         required: true,
+      },
+      {
+        id: 'monthlyContribution',
+        label: 'Monthly Contribution ($)',
+        type: 'number',
+        min: 0,
+        defaultValue: 200,
+        placeholder: 'e.g. 200',
       },
       {
         id: 'annualRate',
@@ -461,8 +469,8 @@ const _allCalculators: CalculatorSchema[] = [
         min: 0,
         max: 100,
         step: 0.01,
-        defaultValue: 5,
-        placeholder: 'e.g. 5',
+        defaultValue: 7,
+        placeholder: 'e.g. 7',
         required: true,
       },
       {
@@ -470,18 +478,18 @@ const _allCalculators: CalculatorSchema[] = [
         label: 'Compounding Frequency',
         type: 'select',
         options: [
-          { label: 'Annually', value: '1' },
-          { label: 'Semi-Annually', value: '2' },
-          { label: 'Quarterly', value: '4' },
-          { label: 'Monthly', value: '12' },
-          { label: 'Daily', value: '365' },
+          { label: 'Daily (365)', value: '365' },
+          { label: 'Monthly (12)', value: '12' },
+          { label: 'Quarterly (4)', value: '4' },
+          { label: 'Semi-Annually (2)', value: '2' },
+          { label: 'Annually (1)', value: '1' },
         ],
         defaultValue: '12',
         required: true,
       },
       {
         id: 'years',
-        label: 'Time Period (years)',
+        label: 'Investment Period (years)',
         type: 'number',
         min: 0,
         step: 1,
@@ -492,25 +500,57 @@ const _allCalculators: CalculatorSchema[] = [
     ],
     formulas: [
       {
-        id: 'amount',
+        id: 'r',
+        expression: 'annualRate / 100 / compoundingFrequency',
+        dependencies: ['annualRate', 'compoundingFrequency'],
+      },
+      {
+        id: 'n',
+        expression: 'compoundingFrequency * years',
+        dependencies: ['compoundingFrequency', 'years'],
+      },
+      {
+        id: 'compoundedPrincipal',
+        expression: 'principal * pow(1 + r, n)',
+        dependencies: ['principal', 'r', 'n'],
+      },
+      {
+        id: 'futureContributions',
         expression:
-          'principal * pow(1 + annualRate / 100 / compoundingFrequency, compoundingFrequency * years)',
-        dependencies: ['principal', 'annualRate', 'compoundingFrequency', 'years'],
+          'r > 0 ? monthlyContribution * 12 / compoundingFrequency * ((pow(1 + r, n) - 1) / r) : monthlyContribution * 12 * years',
+        dependencies: ['monthlyContribution', 'compoundingFrequency', 'r', 'n', 'years'],
+      },
+      {
+        id: 'amount',
+        expression: 'compoundedPrincipal + futureContributions',
+        dependencies: ['compoundedPrincipal', 'futureContributions'],
+      },
+      {
+        id: 'totalContributed',
+        expression: 'principal + monthlyContribution * 12 * years',
+        dependencies: ['principal', 'monthlyContribution', 'years'],
       },
       {
         id: 'interest',
-        expression: 'amount - principal',
-        dependencies: ['amount', 'principal'],
+        expression: 'amount - totalContributed',
+        dependencies: ['amount', 'totalContributed'],
       },
     ],
     outputs: [
       {
         id: 'total-amount',
-        label: 'Total Amount',
+        label: 'Future Value',
         formulaRef: 'amount',
         format: 'currency',
         precision: 2,
         highlight: true,
+      },
+      {
+        id: 'total-contributed',
+        label: 'Total Contributed',
+        formulaRef: 'totalContributed',
+        format: 'currency',
+        precision: 2,
       },
       {
         id: 'interest-earned',
@@ -521,12 +561,16 @@ const _allCalculators: CalculatorSchema[] = [
       },
     ],
     guide: {
-      whatIsIt: 'Compound interest is interest calculated on both the initial principal and the accumulated interest from previous periods. Unlike simple interest, your money grows exponentially over time — often called "the eighth wonder of the world" by investors.',
-      howToUse: 'Enter your initial deposit (principal), the annual interest rate, how often interest compounds (monthly is most common for savings accounts), and how many years you plan to invest. The calculator instantly shows your total balance and how much of it is pure interest.',
-      exampleScenario: 'If you invest $10,000 at 5% annual interest compounded monthly for 10 years, your investment grows to $16,470.09 — earning $6,470.09 in interest without any additional deposits.',
-      proTip: 'The more frequently interest compounds, the more you earn. Daily compounding at 5% yields an effective annual rate of 5.13%, compared to 5.09% for monthly. Over decades, this difference compounds into thousands of dollars.',
+      whatIsIt:
+        'Compound interest is interest calculated on both your initial principal, recurring contributions, and accumulated interest from prior periods—allowing investments to grow exponentially over long time horizons.',
+      howToUse:
+        'Enter your starting deposit (principal), an optional recurring monthly contribution (set to 0 for lump-sum investing), your expected annual return rate, compounding frequency, and time horizon in years.',
+      exampleScenario:
+        'Investing $10,000 today and adding $200 per month at 7% annual interest compounded monthly for 10 years grows to approximately $54,713 — with $34,000 contributed and $20,713 earned in interest.',
+      proTip:
+        'Even small recurring monthly deposits often matter more than chasing higher yields early on. Compare lump-sum vs. recurring contributions side by side using the A / B comparison mode.',
     },
-    metadata: { version: '1.0.0' },
+    metadata: { version: '2.0.0' },
   },
 
   // -----------------------------------------------------------------------
@@ -643,11 +687,11 @@ const _allCalculators: CalculatorSchema[] = [
     slug: 'bmi-calculator',
     title: 'BMI Calculator',
     description:
-      'Calculate your Body Mass Index (BMI) to assess if your weight is healthy for your height.',
+      'Calculate Body Mass Index (BMI), BMI Prime, and Ponderal Index with full support for metric and imperial units.',
     icon: '⚖️',
     category: 'health',
     subcategory: 'body-metrics',
-    tags: ['bmi', 'body', 'mass', 'index', 'weight', 'health'],
+    tags: ['bmi', 'body', 'mass', 'index', 'weight', 'health', 'ponderal'],
     inputs: [
       {
         id: 'weight',
@@ -678,6 +722,28 @@ const _allCalculators: CalculatorSchema[] = [
           { label: 'ft', value: 'ft', conversionFactor: '30.48' },
         ],
       },
+      {
+        id: 'age',
+        label: 'Age (years)',
+        type: 'number',
+        min: 2,
+        max: 120,
+        step: 1,
+        defaultValue: 30,
+        placeholder: 'e.g. 30',
+        helpText: 'Displayed for reference; standard adult BMI does not vary by age.',
+      },
+      {
+        id: 'sex',
+        label: 'Sex',
+        type: 'select',
+        options: [
+          { label: 'Male', value: '0' },
+          { label: 'Female', value: '1' },
+        ],
+        defaultValue: '0',
+        helpText: 'Displayed for reference; standard BMI uses the same formula for both.',
+      },
     ],
     formulas: [
       {
@@ -690,6 +756,16 @@ const _allCalculators: CalculatorSchema[] = [
         expression: 'weight / pow(heightM, 2)',
         dependencies: ['weight', 'heightM'],
       },
+      {
+        id: 'bmiPrime',
+        expression: 'bmi / 25',
+        dependencies: ['bmi'],
+      },
+      {
+        id: 'ponderalIndex',
+        expression: 'weight / pow(heightM, 3)',
+        dependencies: ['weight', 'heightM'],
+      },
     ],
     outputs: [
       {
@@ -698,89 +774,148 @@ const _allCalculators: CalculatorSchema[] = [
         formulaRef: 'bmi',
         format: 'number',
         precision: 1,
+        suffix: ' kg/m²',
         highlight: true,
+      },
+      {
+        id: 'bmi-prime-value',
+        label: 'BMI Prime',
+        formulaRef: 'bmiPrime',
+        format: 'number',
+        precision: 2,
+      },
+      {
+        id: 'ponderal-index-value',
+        label: 'Ponderal Index',
+        formulaRef: 'ponderalIndex',
+        format: 'number',
+        precision: 1,
+        suffix: ' kg/m³',
       },
     ],
     guide: {
-      whatIsIt: 'Body Mass Index (BMI) is a simple screening metric that relates your weight to your height. It is calculated as weight (kg) divided by height (m) squared. While not a direct measure of body fat, it is widely used by healthcare providers as a quick assessment tool.',
-      howToUse: 'Enter your weight and height using your preferred units (the calculator converts automatically). Your BMI is categorized as: Underweight (< 18.5), Normal (18.5-24.9), Overweight (25-29.9), or Obese (>= 30).',
-      exampleScenario: 'A person weighing 70 kg at 175 cm tall has a BMI of 22.9, which falls in the Normal range. If they gained 15 kg, their BMI would rise to 27.8, entering the Overweight category.',
-      proTip: 'BMI does not distinguish between muscle and fat mass. Athletes with high muscle mass may have an Overweight BMI despite low body fat. Combine BMI with waist circumference or body fat percentage for a more complete picture.',
+      whatIsIt:
+        'Computes three body-proportion screening metrics: Body Mass Index (weight ÷ height²), BMI Prime (ratio of your BMI to the upper-normal threshold of 25), and the Ponderal Index (weight ÷ height³), which scales better for very tall or very short individuals.',
+      howToUse:
+        'Enter your weight (kg or lb) and height (cm, in, or ft). Standard BMI ranges are Underweight (< 18.5), Normal (18.5–24.9), Overweight (25–29.9), and Obese (≥ 30).',
+      exampleScenario:
+        'A 70 kg person who is 175 cm tall has a BMI of 22.9 kg/m² (Normal), a BMI Prime of 0.92, and a Ponderal Index of 13.1 kg/m³.',
+      proTip:
+        'BMI does not distinguish between muscle and fat mass. Athletes with high lean mass can show an elevated BMI despite low body fat—pair BMI with waist-to-height ratio or body fat percentage for better context.',
     },
-    metadata: { version: '1.0.0' },
+    metadata: { version: '2.0.0' },
   },
 
   // -----------------------------------------------------------------------
-  // 4. Ohm's Law
+  // 4. Ohm's Law & Power Calculator
   // -----------------------------------------------------------------------
   {
     id: 'ohms-law',
     slug: 'ohms-law',
-    title: "Ohm's Law",
+    title: "Ohm's Law & Power Calculator",
     description:
-      "Calculate resistance and power from voltage and current using Ohm's Law.",
+      "Solve Ohm's Law for current, resistance, power, and hourly energy consumption from voltage and either resistance or current.",
     icon: '⚡',
     category: 'engineering',
     subcategory: 'electrical',
-    tags: ['ohm', 'voltage', 'current', 'resistance', 'electrical'],
+    tags: ["Ohm's law", 'ohm', 'voltage', 'current', 'resistance', 'power', 'watts', 'electrical', 'electronics', 'Wh'],
     inputs: [
       {
-        id: 'voltage',
-        label: 'Voltage (V)',
+        id: 'knownV',
+        label: 'Voltage V (volts)',
         type: 'number',
-        min: 0,
-        step: 0.01,
         defaultValue: 12,
-        placeholder: 'e.g. 12',
+        min: 0,
+        step: 0.1,
         required: true,
       },
       {
-        id: 'current',
-        label: 'Current (A)',
+        id: 'knownR',
+        label: 'Resistance R (ohms)',
         type: 'number',
+        defaultValue: 100,
+        min: 0.000001,
+        step: 1,
+        required: true,
+      },
+      {
+        id: 'knownI',
+        label: 'Current I (amps, 0 = calculate from V/R)',
+        type: 'number',
+        defaultValue: 0,
         min: 0,
         step: 0.001,
-        defaultValue: 2,
-        placeholder: 'e.g. 2',
-        required: true,
+        helpText: 'Leave at 0 to compute current from V ÷ R, or enter a known current to solve for effective resistance and power.',
       },
     ],
     formulas: [
       {
-        id: 'resistance',
-        expression: 'voltage / current',
-        dependencies: ['voltage', 'current'],
+        id: 'current',
+        expression: 'knownI > 0 ? knownI : knownV / knownR',
+        dependencies: ['knownI', 'knownV', 'knownR'],
       },
       {
-        id: 'power',
-        expression: 'voltage * current',
-        dependencies: ['voltage', 'current'],
+        id: 'resistance',
+        expression: 'knownI > 0 ? knownV / knownI : knownR',
+        dependencies: ['knownI', 'knownV', 'knownR'],
+      },
+      {
+        id: 'powerW',
+        expression: 'knownV * current',
+        dependencies: ['knownV', 'current'],
+      },
+      {
+        id: 'energyPerHour',
+        expression: 'powerW',
+        dependencies: ['powerW'],
       },
     ],
     outputs: [
       {
-        id: 'resistance-value',
-        label: 'Resistance',
-        formulaRef: 'resistance',
+        id: 'out-current',
+        label: 'Current (I)',
+        formulaRef: 'current',
         format: 'number',
-        suffix: ' Ω',
+        precision: 4,
+        suffix: ' A',
         highlight: true,
       },
       {
-        id: 'power-value',
-        label: 'Power',
-        formulaRef: 'power',
+        id: 'resistance-value',
+        label: 'Resistance (R)',
+        formulaRef: 'resistance',
         format: 'number',
+        precision: 2,
+        suffix: ' Ω',
+      },
+      {
+        id: 'out-powerW',
+        label: 'Power (P)',
+        formulaRef: 'powerW',
+        format: 'number',
+        precision: 3,
         suffix: ' W',
+      },
+      {
+        id: 'out-energyPerHour',
+        label: 'Energy per Hour',
+        formulaRef: 'energyPerHour',
+        format: 'number',
+        precision: 3,
+        suffix: ' Wh',
       },
     ],
     guide: {
-      whatIsIt: 'Ohm\'s Law is the fundamental relationship in electrical circuits: V = I x R, where V is voltage (volts), I is current (amperes), and R is resistance (ohms). Power (watts) is calculated as P = V x I.',
-      howToUse: 'Enter the voltage across a component and the current flowing through it. The calculator determines the resistance and the power dissipated. This is essential for selecting correct resistors, fuses, and wire gauges.',
-      exampleScenario: 'A 12V car battery powering a 2A headlight bulb: the bulb has 6 ohm resistance and dissipates 24W of power. To determine wire gauge, you need to know the current draw.',
-      proTip: 'When designing circuits, always calculate power dissipation to prevent overheating. A resistor rated for 0.25W carrying 0.5W of power will overheat. Always use components rated for at least 2x the expected power.',
+      whatIsIt:
+        "Ohm's Law defines the fundamental relationship in electrical circuits: V = I × R, where V is voltage (volts), I is current (amperes), and R is resistance (ohms). Electrical power is P = V × I = I²R = V²/R, and hourly energy draw is P × 1 hour in watt-hours (Wh).",
+      howToUse:
+        'Enter your voltage and resistance with Current set to 0 to solve for current and power automatically. Alternatively, enter a non-zero Current (I) alongside Voltage (V) to calculate the effective resistance and power dissipation.',
+      exampleScenario:
+        'A 12V supply across a 100 Ω resistor draws I = 12 / 100 = 0.12 A (120 mA), dissipates P = 12 × 0.12 = 1.44 W of heat, and consumes 1.44 Wh per hour.',
+      proTip:
+        "Choose resistors rated for at least 2× the calculated power dissipation for thermal safety margin. For example, a 1.44 W load requires at least a 3 W rated resistor rather than a 1/4 W part.",
     },
-    metadata: { version: '1.0.0' },
+    metadata: { version: '2.0.0' },
   },
 
   // -----------------------------------------------------------------------
@@ -845,7 +980,7 @@ const _allCalculators: CalculatorSchema[] = [
   },
 
   // -----------------------------------------------------------------------
-  // Advanced Calculator (Beta) — General
+  // Advanced Calculator (Beta) — Math & CAS
   // -----------------------------------------------------------------------
   {
     id: 'advanced-calculator',
@@ -853,41 +988,17 @@ const _allCalculators: CalculatorSchema[] = [
     title: 'Advanced Calculator (Beta)',
     description: 'A multi-mode scientific calculator with symbolic CAS (mathjs), step-by-step solutions, trigonometry, logarithms, and photo math. Beta — actively improving.',
     icon: '🧮',
-    category: 'general',
-    subcategory: 'basic',
-    tags: ['advanced', 'scientific', 'trig', 'calculus', 'step-by-step', 'photo math', 'sin', 'cos', 'log', 'integral', 'symbolic', 'CAS'],
-    inputs: [],
-    formulas: [],
-    outputs: [],
-    guide: {
-      whatIsIt: 'A professional-grade multi-mode calculator covering arithmetic, functions, trigonometry, and calculus with step-by-step solutions powered by mathjs CAS.',
-      howToUse: 'Type any expression (numeric or symbolic with variables x, y, z) or use the on-screen keyboard. Switch between Basic, Functions, Trig, and Calculus modes. Press = or Enter to compute.',
-      exampleScenario: 'A student enters sin(30°) + log(100). Switch to Trig mode, enter sin(30), add log(100), press =. The result 1.5 is shown with detailed step-by-step breakdown.',
-      proTip: 'Symbolic expressions like "2x + 3x" automatically simplify to "5x". Variables stay in the result — no need to assign values.',
-    },
-    metadata: { version: '1.0.0' },
-  },
-
-  // -----------------------------------------------------------------------
-  // Advanced Calculator (Beta) — Math
-  // -----------------------------------------------------------------------
-  {
-    id: 'advanced-calculator-math',
-    slug: 'advanced-calculator-math',
-    title: 'Advanced Calculator (Beta)',
-    description: 'A multi-mode scientific calculator with symbolic CAS (mathjs), step-by-step solutions, trigonometry, logarithms, and photo math. Beta — actively improving.',
-    icon: '🧮',
     category: 'math',
     subcategory: 'algebra',
-    tags: ['advanced', 'scientific', 'trig', 'calculus', 'step-by-step', 'symbolic', 'CAS', 'algebra', 'sin', 'cos', 'log'],
+    tags: ['advanced', 'scientific', 'trig', 'calculus', 'step-by-step', 'photo math', 'sin', 'cos', 'log', 'integral', 'symbolic', 'CAS', 'algebra'],
     inputs: [],
     formulas: [],
     outputs: [],
     guide: {
-      whatIsIt: 'A professional-grade multi-mode calculator with symbolic algebra powered by mathjs CAS — handles variables, index laws, simplification, and numeric evaluation with step-by-step breakdown.',
-      howToUse: 'Type an expression or use the on-screen keyboard. Switch between keyboard modes and press = to solve. Symbolic results (with variables) are simplified automatically.',
-      exampleScenario: 'Enter "13z * 12z^(1/2)" — the CAS simplifies it to "156 * z^(3/2)" automatically, showing the product and index law steps.',
-      proTip: 'Tap the history icon to revisit and restore any of your last 50 calculations.',
+      whatIsIt: 'A professional-grade multi-mode calculator covering arithmetic, algebra, functions, trigonometry, and calculus with step-by-step solutions powered by mathjs CAS.',
+      howToUse: 'Type any expression (numeric or symbolic with variables x, y, z) or use the on-screen keyboard. Switch between Basic, Functions, Trig, and Calculus modes. Press = or Enter to compute.',
+      exampleScenario: 'A student enters sin(30°) + log(100) or simplifies symbolic expressions like "13z * 12z^(1/2)" into "156 * z^(3/2)" with a step-by-step breakdown.',
+      proTip: 'Symbolic expressions like "2x + 3x" automatically simplify to "5x". Variables stay in the result — no need to assign values.',
     },
     metadata: { version: '1.0.0' },
   },
@@ -1221,37 +1332,6 @@ const _allCalculators: CalculatorSchema[] = [
         'You select "Code" at Moderate intensity. The calculator generates: 3 min Planning (read ticket, sketch approach), 22 min Implementation (deep focus coding), 5 min Testing (run tests, fix bugs), 15 min Refactoring (clean up, edge cases), 5 min Documentation (commit message, update docs). Each phase includes what to do, why it matters scientifically, and a pro tip.',
       proTip:
         'The presets are starting points — customize the phases to match your workflow. Some people thrive with longer deep-focus blocks; others need more frequent micro-transitions. The total time adjusts automatically as you resize phases.',
-    },
-    metadata: { version: '1.0.0' },
-  },
-
-  // ─── Progressive Overload Calculator (Special / Optimizer) ──────────────────
-  {
-    id: 'progressive-overload-special',
-    slug: 'progressive-overload-special',
-    title: 'Progressive Overload Calculator',
-    description:
-      'The first-of-its-kind overload engine. Track Volume Load & e1RM, see your Three Paths to progress, and unlock your Relative Strength tier — all in one session.',
-    icon: '🏋️',
-    category: 'special',
-    subcategory: 'optimizer',
-    tags: [
-      'progressive overload', 'volume load', 'strength training', 'gym', 'workout',
-      '1rm', 'one rep max', 'hypertrophy', 'sets reps weight', 'muscle gain',
-      'training optimizer', 'fitness', 'powerlifting', 'bodybuilding',
-    ],
-    inputs: [],
-    formulas: [],
-    outputs: [],
-    guide: {
-      whatIsIt:
-        'A first-of-its-kind Progressive Overload engine. Unlike basic trackers, this calculator shows three distinct paths to beat your last session, tracks both Volume Load (for hypertrophy) and Estimated 1RM (for strength), detects conflicting signals, and provides a relative strength tier calibrated to body weight.',
-      howToUse:
-        '1. Enter last session + current session data.\n2. Review status: Progressed / Maintained / Regressed.\n3. Choose from Three Paths to overload next session.\n4. Add body weight to unlock your Strength Tier.',
-      exampleScenario:
-        'Bench Press: 80 kg × 8 reps × 4 sets = 2,560 kg. Target at +5%: 2,688 kg. Paths: 9 reps (same weight), 85 kg (same reps), or 5 sets (same weight/reps). e1RM: 107.2 kg. Relative strength at 80 kg body weight: 1.34× = Intermediate.',
-      proTip:
-        'Use the conflicting-signal detection: if volume drops but e1RM rises, you shifted to higher-intensity training — this is a valid strength progression, not regression.',
     },
     metadata: { version: '1.0.0' },
   },

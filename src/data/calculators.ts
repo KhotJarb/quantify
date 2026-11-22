@@ -68,6 +68,7 @@ import { tabletopGamingCalcs } from './tabletopGamingCalcs';
 import { travelNomadCalculators } from './travelNomadCalculators';
 import { specialistCalculators } from './specialistCalculators';
 import { ldlCalculators } from './ldlCalculator';
+import { investmentCalculators } from './investmentCalculators';
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1575,6 +1576,11 @@ const _allCalculators: CalculatorSchema[] = [
   // Category: health → cardiovascular
   // ═══════════════════════════════════════════════════════════════════════════
   ...ldlCalculators,
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Investment & Portfolio Suite (12 calculators)
+  // ═══════════════════════════════════════════════════════════════════════════
+  ...investmentCalculators,
 
 ];
 

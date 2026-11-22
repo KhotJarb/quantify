@@ -99,6 +99,7 @@ export default function CalculatorPageClient({
       title: params.get('title') || undefined,
       accent,
       theme: theme === 'light' || theme === 'dark' ? theme : 'auto',
+      currency: params.get('currency')?.toUpperCase() || undefined,
       showChart: params.get('chart') !== '0',
       showMath: params.get('math') !== '0',
       showCompare: params.get('compare') !== '0',

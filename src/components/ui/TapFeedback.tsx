@@ -55,6 +55,8 @@ export default function TapFeedback() {
           ? 'tap-ripple tap-ripple--touch'
           : 'tap-ripple';
       wave.setAttribute('aria-hidden', 'true');
+      wave.style.position = 'absolute';
+      wave.style.pointerEvents = 'none';
       wave.style.width = `${diameter}px`;
       wave.style.height = `${diameter}px`;
       wave.style.left = `${x}px`;

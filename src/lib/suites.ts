@@ -76,6 +76,7 @@ export interface EmbedCustomization {
   title?: string;
   accent?: string;
   theme?: 'auto' | 'light' | 'dark';
+  currency?: string;
   showChart?: boolean;
   showMath?: boolean;
   showCompare?: boolean;

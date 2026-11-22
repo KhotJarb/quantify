@@ -34,10 +34,11 @@ import { CategoryIcon } from '@/components/ui/SuiteIcon';
 import EmbedModal from '@/components/calculator/EmbedModal';
 import ScenarioChart from '@/components/calculator/ScenarioChart';
 import { trackEvent } from '@/lib/telemetry';
-import type {
-  CalculatorSummary,
-  EmbedCustomization,
-  SavedScenario,
+import {
+  CURRENCIES,
+  type CalculatorSummary,
+  type EmbedCustomization,
+  type SavedScenario,
 } from '@/lib/suites';
 
 /* ============================================================
@@ -285,12 +286,20 @@ function formatStepNumber(value: Decimal | undefined): string {
    Main Workbench Component
    ============================================================ */
 
+export interface WorkbenchStateSnapshot {
+  a: { values: Record<string, string>; selectedUnits: Record<string, string> };
+  b: { values: Record<string, string>; selectedUnits: Record<string, string> };
+  compareMode: boolean;
+  isModified: boolean;
+}
+
 interface DynamicCalculatorEngineProps {
   schema: CalculatorSchema;
   mode?: 'page' | 'embed';
   related?: CalculatorSummary[];
   embedConfig?: EmbedCustomization;
   initialValuesOverride?: Record<string, string>;
+  onStateChange?: (snapshot: WorkbenchStateSnapshot) => void;
 }
 
 export default function DynamicCalculatorEngine({
@@ -299,9 +308,10 @@ export default function DynamicCalculatorEngine({
   related = [],
   embedConfig,
   initialValuesOverride,
+  onStateChange,
 }: DynamicCalculatorEngineProps) {
   const {
-    currency,
+    currency: userCurrency,
     favorites,
     toggleFavorite,
     recordVisit,
@@ -309,6 +319,12 @@ export default function DynamicCalculatorEngine({
     saveScenario,
     deleteScenario,
   } = usePreferences();
+
+  const embedCurrencyCode = embedConfig?.currency;
+  const currency =
+    (embedCurrencyCode
+      ? CURRENCIES.find((c) => c.code === embedCurrencyCode)
+      : undefined) ?? userCurrency;
 
   const defaults = useMemo(() => {
     const base = getDefaults(schema);
@@ -355,7 +371,8 @@ export default function DynamicCalculatorEngine({
     if (!isEmbed) {
       recordVisit(schema.slug);
     }
-    if (initialValuesOverride) return;
+    // Skip URL hydration when hosted inside Studio live preview or overridden
+    if (initialValuesOverride || onStateChange) return;
     try {
       const params = new URLSearchParams(window.location.search);
       const rawA = params.get('a') || params.get('v');
@@ -392,7 +409,24 @@ export default function DynamicCalculatorEngine({
     } catch {
       // Ignore malformed share URLs
     }
-  }, [schema.slug, defaults, isEmbed, recordVisit, initialValuesOverride]);
+  }, [schema.slug, defaults, isEmbed, recordVisit, initialValuesOverride, onStateChange]);
+
+  // Notify host (e.g. Quantify Embed Studio) when preview inputs or units change
+  useEffect(() => {
+    if (!onStateChange) return;
+    const valuesChanged = Object.keys(defaults.values).some(
+      (k) => stateA.values[k] !== defaults.values[k]
+    );
+    const unitsChanged = Object.keys(defaults.selectedUnits).some(
+      (k) => stateA.selectedUnits[k] !== defaults.selectedUnits[k]
+    );
+    onStateChange({
+      a: stateA,
+      b: stateB,
+      compareMode,
+      isModified: compareMode || valuesChanged || unitsChanged,
+    });
+  }, [onStateChange, stateA, stateB, compareMode, defaults]);
 
   const evalA = useMemo(() => computeScenario(schema, stateA), [schema, stateA]);
   const evalB = useMemo(

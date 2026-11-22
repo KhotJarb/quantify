@@ -23,7 +23,9 @@ import {
   Code2,
 } from 'lucide-react';
 import AppShell from '@/components/layout/AppShell';
-import DynamicCalculatorEngine from '@/components/calculator/DynamicCalculatorEngine';
+import DynamicCalculatorEngine, {
+  type WorkbenchStateSnapshot,
+} from '@/components/calculator/DynamicCalculatorEngine';
 import { CategoryIcon } from '@/components/ui/SuiteIcon';
 import { usePreferences } from '@/context/PreferencesContext';
 import { trackEvent } from '@/lib/telemetry';
@@ -79,7 +81,7 @@ interface StudioBuilderProps {
 }
 
 export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
-  const { catalog, ensureCatalogLoaded } = usePreferences();
+  const { catalog, ensureCatalogLoaded, currency } = usePreferences();
 
   const [schemaState, dispatchSchema] = useReducer(studioSchemaReducer, {
     activeSchema: initialSchema,
@@ -87,6 +89,19 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
   });
 
   const activeSchema = schemaState.activeSchema;
+
+  // Track live preview parameter overrides so copied/opened embed URLs match the preview exactly
+  const [previewState, setPreviewState] = useState<{
+    slug: string;
+    snapshot: WorkbenchStateSnapshot;
+  } | null>(null);
+
+  const handlePreviewStateChange = useCallback(
+    (snapshot: WorkbenchStateSnapshot) => {
+      setPreviewState({ slug: activeSchema.slug, snapshot });
+    },
+    [activeSchema.slug]
+  );
 
   // Customization controls
   const [customTitle, setCustomTitle] = useState('');
@@ -166,14 +181,31 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
       title: customTitle.trim() || undefined,
       accent: /^#[0-9a-fA-F]{6}$/.test(accent) ? accent : undefined,
       theme,
+      currency: currency.code,
       showChart,
       showMath,
       showCompare,
       ctaLabel: ctaLabel.trim() || undefined,
       ctaUrl: !ctaUrlInvalid && ctaUrl.trim() ? ctaUrl.trim() : undefined,
     }),
-    [customTitle, accent, theme, showChart, showMath, showCompare, ctaLabel, ctaUrl, ctaUrlInvalid]
+    [
+      customTitle,
+      accent,
+      theme,
+      currency.code,
+      showChart,
+      showMath,
+      showCompare,
+      ctaLabel,
+      ctaUrl,
+      ctaUrlInvalid,
+    ]
   );
+
+  const activePreviewSnapshot =
+    previewState && previewState.slug === activeSchema.slug
+      ? previewState.snapshot
+      : null;
 
   const embedUrl = useMemo(() => {
     const origin =
@@ -183,6 +215,7 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
     const url = new URL(`/calculator/${activeSchema.slug}`, origin);
     url.searchParams.set('embed', '1');
     if (theme !== 'auto') url.searchParams.set('theme', theme);
+    if (currency.code !== 'USD') url.searchParams.set('currency', currency.code);
     if (accent.toLowerCase() !== '#8b6336' && /^#[0-9a-fA-F]{6}$/.test(accent)) {
       url.searchParams.set('accent', accent.slice(1));
     }
@@ -194,10 +227,29 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
       url.searchParams.set('cta', ctaLabel.trim());
       url.searchParams.set('ctaUrl', ctaUrl.trim());
     }
+    if (activePreviewSnapshot?.isModified) {
+      url.searchParams.set(
+        'a',
+        JSON.stringify({
+          v: activePreviewSnapshot.a.values,
+          u: activePreviewSnapshot.a.selectedUnits,
+        })
+      );
+      if (activePreviewSnapshot.compareMode) {
+        url.searchParams.set(
+          'b',
+          JSON.stringify({
+            v: activePreviewSnapshot.b.values,
+            u: activePreviewSnapshot.b.selectedUnits,
+          })
+        );
+      }
+    }
     return url.toString();
   }, [
     activeSchema.slug,
     theme,
+    currency.code,
     accent,
     customTitle,
     showChart,
@@ -206,6 +258,7 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
     ctaLabel,
     ctaUrl,
     ctaUrlInvalid,
+    activePreviewSnapshot,
   ]);
 
   const safeTitleAttr = (customTitle.trim() || activeSchema.title).replace(/"/g, '&quot;');
@@ -561,6 +614,9 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
               <div className="st-preview__meta">
                 <span className="wb-pane__label">Live Preview</span>
                 <code className="st-preview__slug">/calculator/{activeSchema.slug}</code>
+                {activePreviewSnapshot?.isModified && (
+                  <span className="st-preview__synced">Presets synced</span>
+                )}
               </div>
 
               <div className="st-preview__controls">
@@ -619,6 +675,7 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
                     schema={activeSchema}
                     mode="embed"
                     embedConfig={embedConfig}
+                    onStateChange={handlePreviewStateChange}
                   />
                 )}
               </div>

@@ -6029,3 +6029,19 @@ textarea {
     break-inside: avoid;
   }
 }
+
+/* Custom numeric input revealed when a Select field picks "Custom…" */
+.field__custom-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 4px;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--color-accent);
+}
+
+.field__custom-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink-2);
+}

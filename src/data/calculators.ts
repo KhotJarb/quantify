@@ -479,35 +479,51 @@ const _allCalculators: CalculatorSchema[] = [
         type: 'select',
         options: [
           { label: 'Daily (365)', value: '365' },
+          { label: 'Weekly (52)', value: '52' },
+          { label: 'Bi-Weekly (26)', value: '26' },
           { label: 'Monthly (12)', value: '12' },
           { label: 'Quarterly (4)', value: '4' },
           { label: 'Semi-Annually (2)', value: '2' },
           { label: 'Annually (1)', value: '1' },
         ],
+        allowCustom: true,
+        min: 1,
+        max: 10000,
+        step: 1,
+        customLabel: 'Custom compounding periods per year',
+        customPlaceholder: 'e.g. 360 or 24',
         defaultValue: '12',
         required: true,
       },
       {
         id: 'years',
-        label: 'Investment Period (years)',
+        label: 'Investment Period',
         type: 'number',
         min: 0,
-        step: 1,
         defaultValue: 10,
         placeholder: 'e.g. 10',
         required: true,
+        units: [
+          { label: 'Years', value: 'years', conversionFactor: '1' },
+          { label: 'Months', value: 'months', conversionFactor: '0.08333333333333333333' },
+        ],
       },
     ],
     formulas: [
       {
+        id: 'freq',
+        expression: 'compoundingFrequency > 0 ? compoundingFrequency : 1',
+        dependencies: ['compoundingFrequency'],
+      },
+      {
         id: 'r',
-        expression: 'annualRate / 100 / compoundingFrequency',
-        dependencies: ['annualRate', 'compoundingFrequency'],
+        expression: 'annualRate / 100 / freq',
+        dependencies: ['annualRate', 'freq'],
       },
       {
         id: 'n',
-        expression: 'compoundingFrequency * years',
-        dependencies: ['compoundingFrequency', 'years'],
+        expression: 'freq * years',
+        dependencies: ['freq', 'years'],
       },
       {
         id: 'compoundedPrincipal',
@@ -517,8 +533,8 @@ const _allCalculators: CalculatorSchema[] = [
       {
         id: 'futureContributions',
         expression:
-          'r > 0 ? monthlyContribution * 12 / compoundingFrequency * ((pow(1 + r, n) - 1) / r) : monthlyContribution * 12 * years',
-        dependencies: ['monthlyContribution', 'compoundingFrequency', 'r', 'n', 'years'],
+          'r > 0 ? monthlyContribution * 12 / freq * ((pow(1 + r, n) - 1) / r) : monthlyContribution * 12 * years',
+        dependencies: ['monthlyContribution', 'freq', 'r', 'n', 'years'],
       },
       {
         id: 'amount',
@@ -564,7 +580,7 @@ const _allCalculators: CalculatorSchema[] = [
       whatIsIt:
         'Compound interest is interest calculated on both your initial principal, recurring contributions, and accumulated interest from prior periods—allowing investments to grow exponentially over long time horizons.',
       howToUse:
-        'Enter your starting deposit (principal), an optional recurring monthly contribution (set to 0 for lump-sum investing), your expected annual return rate, compounding frequency, and time horizon in years.',
+        'Enter your starting deposit (principal), an optional recurring monthly contribution (set to 0 for lump-sum investing), your expected annual return rate, compounding frequency (or choose Custom… to enter any periods per year), and investment period in either Years or Months.',
       exampleScenario:
         'Investing $10,000 today and adding $200 per month at 7% annual interest compounded monthly for 10 years grows to approximately $54,713 — with $34,000 contributed and $20,713 earned in interest.',
       proTip:

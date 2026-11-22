@@ -200,7 +200,10 @@ function computeScenario(
       warnings[field.id] = 'Enter a valid number';
     }
 
-    if (!warnings[field.id] && field.type === 'number') {
+    if (
+      !warnings[field.id] &&
+      (field.type === 'number' || (field.type === 'select' && field.allowCustom))
+    ) {
       if (field.min !== undefined && numericValue.lt(field.min)) {
         warnings[field.id] = `Minimum value is ${field.min}`;
       } else if (field.max !== undefined && numericValue.gt(field.max)) {
@@ -1229,24 +1232,13 @@ function FieldRenderer({
 
     case 'select':
       return (
-        <div className="field">
-          <label className="field__label" htmlFor={field.id}>
-            {displayLabel}
-          </label>
-          {field.helpText && <p className="field__help">{field.helpText}</p>}
-          <select
-            id={field.id}
-            className="field__select"
-            value={value}
-            onChange={(e) => onValueChange(field.id, e.target.value)}
-          >
-            {field.options?.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        <SelectFieldRenderer
+          field={field}
+          displayLabel={displayLabel}
+          value={value}
+          warning={warning}
+          onValueChange={onValueChange}
+        />
       );
 
     case 'range':
@@ -1292,6 +1284,94 @@ function FieldRenderer({
     default:
       return null;
   }
+}
+
+const CUSTOM_SELECT_SENTINEL = '__custom__';
+
+interface SelectFieldRendererProps {
+  field: CalculatorField;
+  displayLabel: string;
+  value: string;
+  warning?: string;
+  onValueChange: (id: string, value: string) => void;
+}
+
+function SelectFieldRenderer({
+  field,
+  displayLabel,
+  value,
+  warning,
+  onValueChange,
+}: SelectFieldRendererProps) {
+  const isPreset = Boolean(field.options?.some((opt) => opt.value === value));
+  const [customActive, setCustomActive] = useState(
+    () => Boolean(field.allowCustom && value !== '' && !isPreset)
+  );
+  const showCustomInput = Boolean(field.allowCustom && (customActive || (value !== '' && !isPreset)));
+  const selectValue = showCustomInput ? CUSTOM_SELECT_SENTINEL : value;
+
+  return (
+    <div className="field">
+      <label className="field__label" htmlFor={field.id}>
+        {displayLabel}
+      </label>
+      {field.helpText && <p className="field__help">{field.helpText}</p>}
+      <select
+        id={field.id}
+        className="field__select"
+        value={selectValue}
+        onChange={(e) => {
+          const next = e.target.value;
+          if (next === CUSTOM_SELECT_SENTINEL) {
+            setCustomActive(true);
+            return;
+          }
+          setCustomActive(false);
+          onValueChange(field.id, next);
+        }}
+      >
+        {field.options?.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+        {field.allowCustom && (
+          <option value={CUSTOM_SELECT_SENTINEL}>Custom…</option>
+        )}
+      </select>
+
+      {showCustomInput && (
+        <div className="field__custom-wrap">
+          {field.customLabel && (
+            <label className="field__custom-label" htmlFor={`${field.id}-custom`}>
+              {field.customLabel}
+            </label>
+          )}
+          <div className={`field__box ${warning ? 'field__box--error' : ''}`}>
+            <input
+              id={`${field.id}-custom`}
+              type="number"
+              inputMode="decimal"
+              className="field__input"
+              value={value}
+              placeholder={field.customPlaceholder || 'Enter custom value'}
+              min={field.min}
+              max={field.max}
+              step={field.step || 'any'}
+              aria-invalid={Boolean(warning)}
+              onChange={(e) => onValueChange(field.id, e.target.value)}
+            />
+          </div>
+          {warning && (
+            <span className="field__error" role="alert">
+              <AlertCircle size={13} aria-hidden="true" />
+              <span>{warning}</span>
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 /* ============================================================

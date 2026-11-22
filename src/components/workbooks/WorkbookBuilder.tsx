@@ -34,7 +34,7 @@ import { CategoryIcon } from '@/components/ui/SuiteIcon';
 import { usePreferences } from '@/context/PreferencesContext';
 import { evaluateFormulas } from '@/engine/formulaParser';
 import { trackEvent } from '@/lib/telemetry';
-import type { CalculatorSchema, OutputField } from '@/types/calculator';
+import type { CalculatorField, CalculatorSchema, OutputField } from '@/types/calculator';
 
 /* ============================================================
    Types & Constants
@@ -1169,25 +1169,19 @@ export default function WorkbookBuilder({ initialSchemas }: WorkbookBuilderProps
                                     </div>
                                   </div>
                                 ) : field.type === 'select' ? (
-                                  <select
+                                  <WorkbookSelectField
                                     id={`wk-${step.id}-${field.id}`}
-                                    className="field__select"
+                                    field={field}
                                     value={step.values[field.id] ?? ''}
-                                    onChange={(e) =>
+                                    onChange={(val) =>
                                       dispatch({
                                         type: 'SET_VALUE',
                                         stepId: step.id,
                                         fieldId: field.id,
-                                        value: e.target.value,
+                                        value: val,
                                       })
                                     }
-                                  >
-                                    {field.options?.map((opt) => (
-                                      <option key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  />
                                 ) : field.type === 'checkbox' ? (
                                   <label className="field__check-row">
                                     <input
@@ -1455,5 +1449,77 @@ export default function WorkbookBuilder({ initialSchemas }: WorkbookBuilderProps
         </section>
       </div>
     </AppShell>
+  );
+}
+
+
+const WK_CUSTOM_SENTINEL = '__custom__';
+
+function WorkbookSelectField({
+  id,
+  field,
+  value,
+  onChange,
+}: {
+  id: string;
+  field: CalculatorField;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const isPreset = Boolean(field.options?.some((opt) => opt.value === value));
+  const [customActive, setCustomActive] = useState(
+    () => Boolean(field.allowCustom && value !== '' && !isPreset)
+  );
+  const showCustomInput = Boolean(field.allowCustom && (customActive || (value !== '' && !isPreset)));
+  const selectValue = showCustomInput ? WK_CUSTOM_SENTINEL : value;
+
+  return (
+    <>
+      <select
+        id={id}
+        className="field__select"
+        value={selectValue}
+        onChange={(e) => {
+          const next = e.target.value;
+          if (next === WK_CUSTOM_SENTINEL) {
+            setCustomActive(true);
+            return;
+          }
+          setCustomActive(false);
+          onChange(next);
+        }}
+      >
+        {field.options?.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+        {field.allowCustom && <option value={WK_CUSTOM_SENTINEL}>Custom…</option>}
+      </select>
+
+      {showCustomInput && (
+        <div className="field__custom-wrap">
+          {field.customLabel && (
+            <label className="field__custom-label" htmlFor={`${id}-custom`}>
+              {field.customLabel}
+            </label>
+          )}
+          <div className="field__box">
+            <input
+              id={`${id}-custom`}
+              type="number"
+              inputMode="decimal"
+              className="field__input"
+              value={value}
+              placeholder={field.customPlaceholder || 'Enter custom value'}
+              min={field.min}
+              max={field.max}
+              step={field.step || 'any'}
+              onChange={(e) => onChange(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

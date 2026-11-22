@@ -31,6 +31,10 @@ export interface CalculatorField {
   max?: number;
   step?: number;
   options?: { label: string; value: string }[];
+  /** For 'select' fields: allows choosing "Custom…" and entering a custom numeric value. */
+  allowCustom?: boolean;
+  customLabel?: string;
+  customPlaceholder?: string;
   placeholder?: string;
   helpText?: string;
   required?: boolean;

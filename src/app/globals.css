@@ -4573,7 +4573,7 @@ textarea {
 
 
 /* ============================================================================
-   14. V2.1 — SAVED SCENARIOS, WORKBOOKS, EMBED STUDIO, COLOPHON & METHODOLOGY
+   14. V0.2 — SAVED SCENARIOS, WORKBOOKS, EMBED STUDIO, COLOPHON & METHODOLOGY
    ============================================================================ */
 
 /* Compact Icon Button Variant */
@@ -5953,7 +5953,7 @@ textarea {
 }
 
 /* ============================================================================
-   RESPONSIVE BREAKPOINTS FOR V2.1 MODULES (Mobile-First 48rem / 64rem)
+   RESPONSIVE BREAKPOINTS FOR V0.2 MODULES (Mobile-First 48rem / 64rem)
    ============================================================================ */
 
 @media (min-width: 48rem) {

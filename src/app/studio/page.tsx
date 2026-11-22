@@ -5,7 +5,7 @@ import StudioBuilder from '@/components/studio/StudioBuilder';
 export const metadata: Metadata = {
   title: 'Studio — Interactive Embeddable Calculator Builder',
   description:
-    'Customize any of 656 Decimal.js calculators with your brand accent, theme, custom title, and call-to-action button, then copy a zero-backend HTML iframe snippet.',
+    'Customize any of 640+ Decimal.js calculators with your brand accent, theme, custom title, and call-to-action button, then copy a zero-backend HTML iframe snippet.',
   openGraph: {
     title: 'Quantify Studio — Interactive Embeddable Calculator Builder',
     description:

@@ -328,7 +328,7 @@ export default function AppShell({
         <main className="stage__main">{children}</main>
 
         <footer className="colophon" aria-label="Site colophon">
-          <span className="colophon__brand">Quantify v2.1 · Decimal.js AST Engine</span>
+          <span className="colophon__brand">Quantify v0.2 · Decimal.js AST Engine</span>
           <nav className="colophon__links" aria-label="Footer navigation">
             <Link href="/">Workbench</Link>
             <Link href="/workbooks">Workbooks</Link>

@@ -329,7 +329,7 @@ export default function WorkbenchHome({
                       setInlineQuery(e.target.value);
                       setVisibleCount(PAGE_SIZE);
                     }}
-                    placeholder="Filter 656 instruments by domain, formula, or metric…"
+                    placeholder={`Filter ${catalog.length} instruments by domain, formula, or metric…`}
                     aria-label="Filter instruments"
                   />
                   {inlineQuery && (

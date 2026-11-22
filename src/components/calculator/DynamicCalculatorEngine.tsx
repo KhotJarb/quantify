@@ -1241,28 +1241,34 @@ function FieldRenderer({
         />
       );
 
-    case 'range':
+    case 'range': {
+      const rMin = field.min ?? 0;
+      const rMax = field.max ?? 100;
+      const rVal = Number(value || rMin);
+      const rPct = rMax > rMin ? Math.min(100, Math.max(0, ((rVal - rMin) / (rMax - rMin)) * 100)) : 0;
       return (
         <div className="field">
           <div className="field__head">
             <label className="field__label" htmlFor={field.id}>
               {displayLabel}
             </label>
-            <span className="field__range-readout">{value || field.min || 0}</span>
+            <span className="field__range-readout">{value || rMin}</span>
           </div>
           {field.helpText && <p className="field__help">{field.helpText}</p>}
           <input
             id={field.id}
             type="range"
             className="field__range"
-            value={value || field.min || 0}
-            min={field.min ?? 0}
-            max={field.max ?? 100}
+            value={value || rMin}
+            min={rMin}
+            max={rMax}
             step={field.step ?? 1}
+            style={{ '--range-pct': `${rPct}%` } as React.CSSProperties}
             onChange={(e) => onValueChange(field.id, e.target.value)}
           />
         </div>
       );
+    }
 
     case 'checkbox':
       return (

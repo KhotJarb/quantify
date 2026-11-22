@@ -5,6 +5,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { PreferencesProvider } from '@/context/PreferencesContext';
 import CommandPalette from '@/components/layout/CommandPalette';
+import TapFeedback from '@/components/ui/TapFeedback';
 import {
   getSuiteCounts,
   getSiteUrl,
@@ -110,6 +111,7 @@ export default function RootLayout({
           <PreferencesProvider suiteCounts={suiteCounts}>
             {children}
             <CommandPalette />
+            <TapFeedback />
           </PreferencesProvider>
         </ThemeProvider>
         <Analytics />

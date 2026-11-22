@@ -6045,3 +6045,283 @@ textarea {
   font-weight: 600;
   color: var(--color-ink-2);
 }
+
+
+/* ============================================================================
+   15. PRECISION SCROLLBARS, RANGE SLIDERS & TACTILE PRESS MICRO-INTERACTIONS
+   ============================================================================ */
+
+/* Bespoke Slim Floating Scrollbars (Chromium / Edge / Safari) */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-rule-strong);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--color-accent-hover);
+}
+
+/* Whisper-thin rail & popover scrollbars */
+.rail__nav::-webkit-scrollbar,
+.cmd-list::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.rail__nav::-webkit-scrollbar-thumb,
+.cmd-list::-webkit-scrollbar-thumb {
+  background-color: var(--color-rule);
+  border: 1.5px solid transparent;
+  background-clip: content-box;
+}
+
+.rail:hover .rail__nav::-webkit-scrollbar-thumb,
+.cmd-list:hover::-webkit-scrollbar-thumb {
+  background-color: var(--color-rule-strong);
+}
+
+.rail__nav::-webkit-scrollbar-thumb:hover,
+.cmd-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
+}
+
+/* Firefox standard scrollbar fallback (scoped so Chromium keeps custom pill thumbs) */
+@supports not selector(::-webkit-scrollbar) {
+  html,
+  body,
+  .rail__nav,
+  .cmd-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-rule-strong) transparent;
+  }
+}
+
+/* Upgraded Range Sliders (Filled Bronze Track + Tactile Precision Thumb) */
+.field__range {
+  --range-pct: 0%;
+  height: 7px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) 0%,
+    var(--color-accent) var(--range-pct),
+    var(--color-surface-3) var(--range-pct),
+    var(--color-surface-3) 100%
+  );
+  box-shadow: inset 0 0 0 1px var(--color-rule);
+  transition: box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.field__range:hover {
+  box-shadow: inset 0 0 0 1px var(--color-rule-strong);
+}
+
+.field__range::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-surface);
+  border: 2.5px solid var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.field__range:hover::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px var(--color-accent-soft), var(--shadow-sm);
+}
+
+.field__range:active::-webkit-slider-thumb {
+  transform: scale(0.98);
+  background-color: var(--color-accent);
+  box-shadow: 0 0 0 6px var(--color-accent-soft), var(--shadow-sm);
+}
+
+.field__range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-surface);
+  border: 2.5px solid var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.field__range:hover::-moz-range-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px var(--color-accent-soft), var(--shadow-sm);
+}
+
+.field__range:active::-moz-range-thumb {
+  transform: scale(0.98);
+  background-color: var(--color-accent);
+  box-shadow: 0 0 0 6px var(--color-accent-soft), var(--shadow-sm);
+}
+
+/* Tactile Press Micro-Interactions & Pointer-Origin Ink Ripple */
+button,
+a,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn,
+.icon-btn,
+.wb-chip,
+.cat-pill,
+.pulse-btn,
+.seg-control__btn,
+.rail-item,
+.mobile-dock__btn,
+.suite-tile,
+.wk-tpl-card,
+.recent-chip,
+.readout-card__copy,
+.wk-bind-btn,
+.wk-picker__item,
+.cmd-trigger {
+  position: relative;
+  overflow: hidden;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.btn:active:not(:disabled),
+.wb-chip:active:not(:disabled),
+.cat-pill:active:not(:disabled),
+.pulse-btn:active:not(:disabled),
+.seg-control__btn:active:not(:disabled),
+.rail-item:active,
+.suite-tile:active,
+.wk-tpl-card:active,
+.recent-chip:active,
+.wk-bind-btn:active,
+.wk-picker__item:active,
+.cmd-trigger:active {
+  transform: scale(0.975);
+  transition-duration: 80ms;
+}
+
+.icon-btn:active:not(:disabled),
+.mobile-dock__btn:active,
+.readout-card__copy:active,
+.theme-toggle:active {
+  transform: scale(0.93);
+  transition-duration: 80ms;
+}
+
+.calc-card,
+.related-card {
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.calc-card:active,
+.related-card:active {
+  transform: scale(0.985);
+  transition-duration: 85ms;
+}
+
+.tap-ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background-color: currentColor;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  will-change: transform, opacity;
+  animation: tap-ripple-mouse 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tap-ripple--touch {
+  animation: tap-ripple-touch 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tap-ripple-mouse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.16;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes tap-ripple-touch {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.26;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@media (hover: none) {
+  .btn:active:not(:disabled),
+  .wb-chip:active:not(:disabled),
+  .cat-pill:active:not(:disabled),
+  .pulse-btn:active:not(:disabled),
+  .rail-item:active,
+  .suite-tile:active {
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  .icon-btn:active,
+  .wb-chip:active,
+  .cat-pill:active,
+  .pulse-btn:active,
+  .seg-control__btn:active,
+  .rail-item:active,
+  .mobile-dock__btn:active,
+  .suite-tile:active,
+  .wk-tpl-card:active,
+  .recent-chip:active,
+  .readout-card__copy:active,
+  .wk-bind-btn:active,
+  .wk-picker__item:active,
+  .cmd-trigger:active,
+  .calc-card:active,
+  .related-card:active {
+    transform: none;
+  }
+
+  .tap-ripple {
+    display: none;
+  }
+}

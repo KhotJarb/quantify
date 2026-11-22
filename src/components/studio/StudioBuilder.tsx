@@ -514,6 +514,11 @@ export default function StudioBuilder({ initialSchema }: StudioBuilderProps) {
                 max={860}
                 step={20}
                 value={iframeHeight}
+                style={
+                  {
+                    '--range-pct': `${((iframeHeight - 520) / (860 - 520)) * 100}%`,
+                  } as React.CSSProperties
+                }
                 onChange={(e) => setIframeHeight(Number(e.target.value))}
               />
             </div>

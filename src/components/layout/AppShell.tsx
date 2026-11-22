@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -22,6 +22,7 @@ import ThemeToggle from '@/components/theme/ThemeToggle';
 import { SuiteIcon } from '@/components/ui/SuiteIcon';
 import { usePreferences } from '@/context/PreferencesContext';
 import { CURRENCIES, FLAGSHIP_SUITES, SUITES, type SuiteId } from '@/lib/suites';
+import { lockBodyScroll } from '@/lib/scrollLock';
 
 interface BreadcrumbItem {
   label: string;
@@ -56,6 +57,11 @@ export default function AppShell({
   } = usePreferences();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    return lockBodyScroll();
+  }, [drawerOpen]);
 
   const exploreSuite = SUITES.find((s) => s.id === 'explore')!;
   const isHome = pathname === '/';

@@ -18,6 +18,7 @@ import { usePreferences } from '@/context/PreferencesContext';
 import { evaluateExpression } from '@/engine/formulaParser';
 import { CategoryIcon } from '@/components/ui/SuiteIcon';
 import { FEATURED_INSTRUMENT_SLUGS, type CalculatorSummary } from '@/lib/suites';
+import { lockBodyScroll } from '@/lib/scrollLock';
 
 /** Returns a formatted Decimal.js result if the query looks like a valid math expression. */
 function tryQuickMath(raw: string): string | null {
@@ -120,13 +121,19 @@ export default function CommandPalette() {
   );
 
   useEffect(() => {
-    if (commandOpen) {
-      if (!catalogLoaded) {
-        void ensureCatalogLoaded();
-      }
-      // Focus next frame so dialog renders smoothly without scroll jump
-      requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+    if (!commandOpen) return;
+    const unlock = lockBodyScroll();
+    if (!catalogLoaded) {
+      void ensureCatalogLoaded();
     }
+    // Focus next frame so dialog renders smoothly without scroll jump
+    const rafId = requestAnimationFrame(() =>
+      inputRef.current?.focus({ preventScroll: true })
+    );
+    return () => {
+      cancelAnimationFrame(rafId);
+      unlock();
+    };
   }, [commandOpen, catalogLoaded, ensureCatalogLoaded]);
 
   // Keep active row visible on arrow navigation
@@ -190,7 +197,11 @@ export default function CommandPalette() {
               setQuery(e.target.value);
               setActiveIndex(0);
             }}
-            placeholder="Search 656 instruments or type math (e.g. 250000 * 0.065 / 12)…"
+            placeholder={
+              catalog.length > 0
+                ? `Search ${catalog.length} instruments or type math (e.g. 250000 * 0.065 / 12)…`
+                : 'Search instruments or type math (e.g. 250000 * 0.065 / 12)…'
+            }
             aria-label="Search calculators or evaluate expression"
           />
           {query && (

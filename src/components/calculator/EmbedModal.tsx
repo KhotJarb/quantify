@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { CalculatorSchema } from '@/types/calculator';
 import { trackEvent } from '@/lib/telemetry';
+import { lockBodyScroll } from '@/lib/scrollLock';
 
 interface EmbedModalProps {
   schema: CalculatorSchema;
@@ -44,12 +45,16 @@ export default function EmbedModal({ schema, isOpen, onClose }: EmbedModalProps)
 
   useEffect(() => {
     if (!isOpen) return;
+    const unlock = lockBodyScroll();
     closeRef.current?.focus();
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      unlock();
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;

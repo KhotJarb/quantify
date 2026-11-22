@@ -1,87 +1,116 @@
-'use client';
-
-import { use, useMemo } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import DynamicCalculatorEngine from '@/components/calculator/DynamicCalculatorEngine';
-import StandardCalculator from '@/components/calculator/StandardCalculator';
-import ScientificCalculator from '@/components/calculator/ScientificCalculator';
-import GapTimeOptimizer from '@/components/calculator/GapTimeOptimizer';
-import FiftyMinutesCalculator from '@/components/calculator/FiftyMinutesCalculator';
-import ProgressiveOverloadCalculator from '@/components/calculator/ProgressiveOverloadCalculator';
-import AdvancedCalculator from '@/components/calculator/AdvancedCalculator';
-import LDLCalculatorEnhanced from '@/components/calculator/LDLCalculatorEnhanced';
-import { calculators, categories } from '@/data/calculators';
-
-// Slugs that use a custom component instead of DynamicCalculatorEngine
-const CUSTOM_CALCULATORS: Record<string, React.ComponentType> = {
-  'base-calculator': StandardCalculator,
-  'scientific-calculator': ScientificCalculator,
-  'gap-time-optimizer': GapTimeOptimizer,
-  'fifty-minutes-calculator': FiftyMinutesCalculator,
-  'progressive-overload': ProgressiveOverloadCalculator,
-  'progressive-overload-special': ProgressiveOverloadCalculator,
-  'advanced-calculator': AdvancedCalculator,
-  'advanced-calculator-math': AdvancedCalculator,
-  'ldl-cholesterol-enhanced': LDLCalculatorEnhanced,
-};
+import {
+  getCalculatorBySlug,
+  getCategorySummaries,
+  getFlagshipPrebuildSlugs,
+  getRelatedCalculators,
+  getSiteUrl,
+} from '@/lib/catalog';
+import CalculatorPageClient from '@/components/calculator/CalculatorPageClient';
+import AppShell from '@/components/layout/AppShell';
 
 interface CalculatorPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default function CalculatorPage({ params }: CalculatorPageProps) {
-  const { slug } = use(params);
+export function generateStaticParams() {
+  return getFlagshipPrebuildSlugs().map((slug) => ({ slug }));
+}
 
-  const schema = useMemo(
-    () => calculators.find((c) => c.slug === slug),
-    [slug]
-  );
+export async function generateMetadata({
+  params,
+}: CalculatorPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const schema = getCalculatorBySlug(slug);
+
+  if (!schema) {
+    return {
+      title: 'Instrument Not Found',
+      description: 'The requested Quantify calculator could not be found.',
+    };
+  }
+
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/calculator/${schema.slug}`;
+
+  return {
+    title: schema.title,
+    description: schema.description,
+    keywords: [...(schema.tags ?? []), schema.category, 'calculator', 'Quantify'],
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${schema.title} | Quantify`,
+      description: schema.description,
+      url: canonicalUrl,
+      type: 'website',
+      siteName: 'Quantify',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${schema.title} | Quantify`,
+      description: schema.description,
+    },
+  };
+}
+
+export default async function CalculatorPage({ params }: CalculatorPageProps) {
+  const { slug } = await params;
+  const schema = getCalculatorBySlug(slug);
 
   if (!schema) {
     return (
-      <div className="app-layout">
-        <main className="app-main" style={{ marginLeft: 0 }}>
-          <div className="app-content">
-            <div className="empty-state">
-              <div className="empty-state__icon">🚫</div>
-              <h3 className="empty-state__title">Calculator not found</h3>
-              <p className="empty-state__desc">
-                The calculator you&apos;re looking for doesn&apos;t exist.
-              </p>
-              <Link href="/" className="btn btn--primary" style={{ marginTop: '1.5rem' }}>
-                ← Back to Dashboard
-              </Link>
-            </div>
+      <AppShell breadcrumbs={[{ label: 'Workbench', href: '/' }, { label: 'Not Found' }]}>
+        <div className="calc-page-wrap">
+          <div className="empty-panel" role="status">
+            <h1 className="empty-panel__title">Instrument not found</h1>
+            <p className="empty-panel__desc">
+              The calculator you requested does not exist or may have moved.
+            </p>
+            <Link href="/" className="btn btn--primary">
+              Return to Workbench
+            </Link>
           </div>
-        </main>
-      </div>
+        </div>
+      </AppShell>
     );
   }
 
-  const categoryLabel = categories.find((c) => c.id === schema.category)?.label ?? schema.category;
-  const CustomComponent = CUSTOM_CALCULATORS[slug];
+  const categoryMeta = getCategorySummaries().find((c) => c.id === schema.category);
+  const categoryLabel = categoryMeta?.label ?? schema.category;
+  const related = getRelatedCalculators(schema.slug, 4);
+  const siteUrl = getSiteUrl();
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: schema.title,
+    description: schema.description,
+    url: `${siteUrl}/calculator/${schema.slug}`,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  };
 
   return (
-    <div className="app-layout">
-      <main className="app-main" style={{ marginLeft: 0 }}>
-        <header className="app-header">
-          <nav className="breadcrumb">
-            <Link href="/" className="breadcrumb__link">
-              Dashboard
-            </Link>
-            <span className="breadcrumb__separator">/</span>
-            <Link href={`/?category=${schema.category}`} className="breadcrumb__link">
-              {categoryLabel}
-            </Link>
-            <span className="breadcrumb__separator">/</span>
-            <span className="breadcrumb__current">{schema.title}</span>
-          </nav>
-        </header>
-
-        <div className="app-content">
-          {CustomComponent ? <CustomComponent /> : <DynamicCalculatorEngine schema={schema} />}
-        </div>
-      </main>
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
+      <CalculatorPageClient
+        schema={schema}
+        categoryLabel={categoryLabel}
+        related={related}
+      />
+    </>
   );
 }

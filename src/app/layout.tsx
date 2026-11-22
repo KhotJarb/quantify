@@ -1,80 +1,118 @@
-import type { Metadata, Viewport } from "next";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import type { Metadata, Viewport } from 'next';
+import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
+import './globals.css';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { PreferencesProvider } from '@/context/PreferencesContext';
+import CommandPalette from '@/components/layout/CommandPalette';
+import {
+  getSuiteCounts,
+  getSiteUrl,
+} from '@/lib/catalog';
 
-/* ─────────────────────────────────────────────────────────────
-   Viewport — exported separately as required by Next.js 15+.
-   themeColor with media queries controls the iOS status bar
-   colour in both light and dark mode.
-──────────────────────────────────────────────────────────────── */
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-fraunces',
+  display: 'swap',
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-ibm-plex-sans',
+  display: 'swap',
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-ibm-plex-mono',
+  display: 'swap',
+});
+
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,        // Prevent accidental double-tap zoom in standalone mode
-  userScalable: false,
-  viewportFit: "cover",   // Extend into notch / Dynamic Island safe areas
+  viewportFit: 'cover',
   themeColor: [
-    // Light mode — warm off-white matches --bg-primary
-    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
-    // Dark mode — deep charcoal matches --bg-primary (dark)
-    { media: "(prefers-color-scheme: dark)",  color: "#141210" },
+    { media: '(prefers-color-scheme: light)', color: '#f8f6f2' },
+    { media: '(prefers-color-scheme: dark)', color: '#171512' },
   ],
 };
 
-/* ─────────────────────────────────────────────────────────────
-   Page Metadata
-──────────────────────────────────────────────────────────────── */
+const siteUrl = getSiteUrl();
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+const bingVerification = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION?.trim();
+
 export const metadata: Metadata = {
-  title: "Quantify",
+  metadataBase: new URL(siteUrl),
+  ...(googleVerification || bingVerification
+    ? {
+        verification: {
+          ...(googleVerification ? { google: googleVerification } : {}),
+          ...(bingVerification ? { other: { 'msvalidate.01': bingVerification } } : {}),
+        },
+      }
+    : {}),
+  title: {
+    default: 'Quantify — Precision Decision & Calculation Instruments',
+    template: '%s | Quantify',
+  },
   description:
-    "Enterprise-grade calculator platform with mathematically precise computation. Finance, Engineering, Health, Science, and more.",
+    'Deterministic, arbitrary-precision calculators across Wealth & Finance, Clinical Health, Engineering, Science, and Business—featuring A/B scenario comparison and auditable math.',
   keywords: [
-    "calculator", "finance", "engineering", "health",
-    "science", "math", "conversion", "precision",
+    'precision calculator',
+    'financial modeling',
+    'scenario comparison',
+    'clinical calculators',
+    'engineering calculators',
+    'decimal.js',
+    'quantify',
   ],
-
-  // ── PWA / Home Screen ─────────────────────────────────────
-  manifest: "/manifest.webmanifest",
-
-  // ── Apple / iOS ───────────────────────────────────────────
+  manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    title: "Quantify",
-    statusBarStyle: "black-translucent",
+    title: 'Quantify',
+    statusBarStyle: 'black-translucent',
   },
-
-  // ── Open Graph (share cards) ──────────────────────────────
   openGraph: {
-    title: "Quantify",
+    title: 'Quantify — Precision Decision & Calculation Instruments',
     description:
-      "Enterprise-grade calculator platform for Finance, Engineering, Health, Science, and more.",
-    type: "website",
-    siteName: "Quantify",
+      'Deterministic arbitrary-precision calculation instruments with live A/B scenario comparison and auditable formula traces.',
+    type: 'website',
+    siteName: 'Quantify',
+    url: siteUrl,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Quantify — Precision Decision & Calculation Instruments',
+    description:
+      'Deterministic calculation instruments with A/B scenario comparison and auditable formulas.',
   },
 };
-
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const suiteCounts = getSuiteCounts();
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
+    >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <PreferencesProvider suiteCounts={suiteCounts}>
+            {children}
+            <CommandPalette />
+          </PreferencesProvider>
+        </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

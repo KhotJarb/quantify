@@ -555,6 +555,7 @@ export default function AdvancedCalculator() {
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement | null)?.closest?.('[role="dialog"]')) return;
       if (e.key === 'Enter') compute();
       else if (e.key === 'Escape') { setSolved(null); setExpression(''); setShowSteps(false); }
     };

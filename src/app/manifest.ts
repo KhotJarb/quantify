@@ -5,15 +5,15 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Quantify',
     short_name: 'Quantify',
     description:
-      'Enterprise-grade calculator platform for Finance, Engineering, Health, Science, and more.',
+      'Deterministic, arbitrary-precision calculation instruments with A/B scenario comparison and auditable math.',
     start_url: '/',
     id: '/',
     display: 'standalone',
-    orientation: 'portrait',
+    orientation: 'any',
 
-    // Japandi warm charcoal — matches --bg-sidebar (dark) / --bg-primary (light)
-    background_color: '#faf9f7',
-    theme_color: '#141210',
+    // Warm Alabaster Paper (light) / Deep Obsidian Walnut (dark)
+    background_color: '#f8f6f2',
+    theme_color: '#171512',
 
     categories: ['finance', 'utilities', 'productivity'],
 

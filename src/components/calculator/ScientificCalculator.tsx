@@ -257,6 +257,16 @@ export default function ScientificCalculator() {
   // Keyboard support
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      if (
+        e.metaKey ||
+        e.ctrlKey ||
+        e.altKey ||
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement
+      ) {
+        return;
+      }
       if (e.key >= '0' && e.key <= '9') { e.preventDefault(); handleAction(e.key); }
       else if (e.key === '.') { e.preventDefault(); handleAction('.'); }
       else if (e.key === '+') { e.preventDefault(); handleAction('op:+'); }

@@ -177,6 +177,16 @@ export default function StandardCalculator() {
   // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.metaKey ||
+        e.ctrlKey ||
+        e.altKey ||
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement
+      ) {
+        return;
+      }
       if (e.key >= '0' && e.key <= '9') { e.preventDefault(); inputDigit(e.key); }
       else if (e.key === '.') { e.preventDefault(); inputDecimal(); }
       else if (e.key === '+') { e.preventDefault(); handleOperation('+'); }

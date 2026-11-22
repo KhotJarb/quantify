@@ -61,7 +61,7 @@ function NumInput({
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <label style={{ fontSize: 12, fontWeight: 600, color: '#8b8780', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+      <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-ink-2)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
         {label}
       </label>
       <div style={{ position: 'relative' }}>
@@ -75,23 +75,23 @@ function NumInput({
           style={{
             width: '100%', boxSizing: 'border-box',
             padding: unit ? '10px 44px 10px 14px' : '10px 14px',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.10)',
+            background: 'var(--color-surface-2)',
+            border: '1px solid var(--color-rule-strong)',
             borderRadius: 10,
-            color: '#e8e6e0', fontSize: 15, fontWeight: 500,
+            color: 'var(--color-ink)', fontSize: 16, fontWeight: 500,
             outline: 'none', transition: 'border 0.2s',
           }}
           onFocus={e => { e.target.style.borderColor = 'rgba(90,138,106,0.55)'; }}
-          onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.10)'; }}
+          onBlur={e => { e.target.style.borderColor = 'var(--color-rule-strong)'; }}
         />
         {unit && (
           <span style={{
             position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-            fontSize: 12, color: '#8b8780', fontWeight: 600, pointerEvents: 'none',
+            fontSize: 12, color: 'var(--color-ink-2)', fontWeight: 600, pointerEvents: 'none',
           }}>{unit}</span>
         )}
       </div>
-      {hint && <span style={{ fontSize: 11, color: '#6b6862' }}>{hint}</span>}
+      {hint && <span style={{ fontSize: 11, color: 'var(--color-ink-muted)' }}>{hint}</span>}
     </div>
   );
 }
@@ -103,18 +103,18 @@ function PathCard({
 }) {
   return (
     <div style={{
-      background: highlight ? 'rgba(74,154,106,0.08)' : 'rgba(255,255,255,0.03)',
-      border: `1px solid ${highlight ? 'rgba(74,154,106,0.28)' : 'rgba(255,255,255,0.08)'}`,
+      background: highlight ? 'rgba(74,154,106,0.08)' : 'var(--color-surface)',
+      border: `1px solid ${highlight ? 'rgba(74,154,106,0.28)' : 'var(--color-rule)'}`,
       borderRadius: 14, padding: '18px 20px',
       display: 'flex', flexDirection: 'column', gap: 8,
       flex: 1, minWidth: 180,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span style={{ fontSize: 22 }}>{icon}</span>
-        <span style={{ fontSize: 12, fontWeight: 700, color: '#8b8780', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{method}</span>
+        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-ink-2)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{method}</span>
       </div>
-      <div style={{ fontSize: 20, fontWeight: 700, color: highlight ? '#4a9a6a' : '#e8e6e0' }}>{action}</div>
-      <div style={{ fontSize: 12, color: '#8b8780' }}>{change}</div>
+      <div style={{ fontSize: 20, fontWeight: 700, color: highlight ? '#4a9a6a' : 'var(--color-ink)' }}>{action}</div>
+      <div style={{ fontSize: 12, color: 'var(--color-ink-2)' }}>{change}</div>
     </div>
   );
 }
@@ -124,13 +124,13 @@ function MetricBlock({ label, value, sub, delta, color }: {
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#6b6862', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{label}</div>
-      <div style={{ fontSize: 26, fontWeight: 700, color: color ?? '#e8e6e0', lineHeight: 1.1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: '#8b8780' }}>{sub}</div>}
+      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-ink-muted)', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{label}</div>
+      <div style={{ fontSize: 26, fontWeight: 700, color: color ?? 'var(--color-ink)', lineHeight: 1.1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: 'var(--color-ink-2)' }}>{sub}</div>}
       {delta && (
         <div style={{
           fontSize: 12, fontWeight: 600,
-          color: delta.startsWith('+') ? '#4a9a6a' : delta.startsWith('-') ? '#a05a5a' : '#8b8780',
+          color: delta.startsWith('+') ? '#4a9a6a' : delta.startsWith('-') ? '#a05a5a' : 'var(--color-ink-2)',
         }}>{delta}</div>
       )}
     </div>
@@ -146,15 +146,15 @@ function VolumeBar({ prev, curr, target }: { prev: number; curr: number; target:
 
   const Bar = ({ width, color, label, value }: { width: number; color: string; label: string; value: string }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <div style={{ width: 80, fontSize: 11, color: '#8b8780', textAlign: 'right', flexShrink: 0 }}>{label}</div>
-      <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', borderRadius: 6, height: 10, overflow: 'hidden' }}>
+      <div style={{ width: 80, fontSize: 11, color: 'var(--color-ink-2)', textAlign: 'right', flexShrink: 0 }}>{label}</div>
+      <div style={{ flex: 1, background: 'var(--color-surface-2)', borderRadius: 6, height: 10, overflow: 'hidden' }}>
         <div style={{
           height: '100%', width: `${Math.min(width, 100)}%`,
           background: color, borderRadius: 6,
           transition: 'width 0.5s cubic-bezier(0.4,0,0.2,1)',
         }} />
       </div>
-      <div style={{ width: 70, fontSize: 12, fontWeight: 600, color: '#e8e6e0', flexShrink: 0 }}>{value}</div>
+      <div style={{ width: 70, fontSize: 12, fontWeight: 600, color: 'var(--color-ink)', flexShrink: 0 }}>{value}</div>
     </div>
   );
 
@@ -242,18 +242,18 @@ export default function ProgressiveOverloadCalculator() {
 
   /* ── Styles ── */
   const card: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--color-surface)',
+    border: '1px solid var(--color-rule)',
     borderRadius: 18, padding: '24px 28px',
     backdropFilter: 'blur(4px)',
   };
   const sectionLabel: React.CSSProperties = {
-    fontSize: 10, fontWeight: 800, color: '#5a5a5a',
+    fontSize: 10, fontWeight: 800, color: 'var(--color-ink-muted)',
     letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 16,
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", color: '#e8e6e0', maxWidth: 860, margin: '0 auto', padding: '0 0 3rem' }}>
+    <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", color: 'var(--color-ink)', maxWidth: 860, margin: '0 auto', padding: '0 0 3rem' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         input[type=number]::-webkit-inner-spin-button,
@@ -262,10 +262,10 @@ export default function ProgressiveOverloadCalculator() {
         input[type=range] { -webkit-appearance: none; appearance: none; height: 5px; border-radius: 5px; outline: none; cursor: pointer; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #4a9a6a; cursor: pointer; transition: transform 0.15s; }
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
-        .plo-btn-pill { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); }
-        .plo-btn-pill button { flex: 1; padding: 8px 14px; background: transparent; border: none; color: #8b8780; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.18s; }
+        .plo-btn-pill { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid var(--color-rule-strong); }
+        .plo-btn-pill button { flex: 1; padding: 8px 14px; background: transparent; border: none; color: var(--color-ink-2); cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.18s; }
         .plo-btn-pill button.active { background: rgba(74,154,106,0.2); color: #4a9a6a; }
-        .plo-btn-pill button:hover:not(.active) { background: rgba(255,255,255,0.05); color: #e8e6e0; }
+        .plo-btn-pill button:hover:not(.active) { background: var(--color-surface-2); color: var(--color-ink); }
       `}</style>
 
       {/* ── Hero ── */}
@@ -273,10 +273,10 @@ export default function ProgressiveOverloadCalculator() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
           <span style={{ fontSize: 32 }}>🏋️</span>
           <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: '#f0ede8' }}>
+            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: 'var(--color-ink)' }}>
               Progressive Overload Calculator
             </h1>
-            <p style={{ margin: '4px 0 0', fontSize: 14, color: '#8b8780' }}>
+            <p style={{ margin: '4px 0 0', fontSize: 14, color: 'var(--color-ink-2)' }}>
               Track Volume Load &amp; e1RM across sessions · Discover your three paths to progress
             </p>
           </div>
@@ -286,7 +286,7 @@ export default function ProgressiveOverloadCalculator() {
       {/* ── Unit + Exercise row ── */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 2, minWidth: 200 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#8b8780', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-ink-2)', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
             Exercise name (optional)
           </label>
           <input
@@ -297,15 +297,15 @@ export default function ProgressiveOverloadCalculator() {
             style={{
               width: '100%', boxSizing: 'border-box',
               padding: '10px 14px',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: 10, color: '#e8e6e0', fontSize: 14,
+              background: 'var(--color-surface-2)',
+              border: '1px solid var(--color-rule-strong)',
+              borderRadius: 10, color: 'var(--color-ink)', fontSize: 14,
               outline: 'none',
             }}
           />
         </div>
         <div>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#8b8780', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-ink-2)', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
             Unit
           </label>
           <div className="plo-btn-pill" style={{ minWidth: 120 }}>
@@ -327,14 +327,14 @@ export default function ProgressiveOverloadCalculator() {
           </div>
           {hasPrev && (
             <div style={{ marginTop: 16, padding: '10px 14px', background: 'rgba(92,122,138,0.1)', borderRadius: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 12, color: '#8b8780' }}>Volume Load</span>
+              <span style={{ fontSize: 12, color: 'var(--color-ink-2)' }}>Volume Load</span>
               <span style={{ fontSize: 16, fontWeight: 700, color: '#5c7a8a' }}>{fd(calc.prevVol, 0)} {unit}</span>
             </div>
           )}
         </div>
 
         {/* This session */}
-        <div style={{ ...card, border: hasCurr ? '1px solid rgba(74,154,106,0.25)' : '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ ...card, border: hasCurr ? '1px solid rgba(74,154,106,0.25)' : '1px solid var(--color-rule)' }}>
           <div style={sectionLabel}>🏋️ This Session</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <NumInput label={`Weight lifted (${unit})`} value={cw} onChange={setCw} unit={unit} placeholder="e.g. 55" />
@@ -343,7 +343,7 @@ export default function ProgressiveOverloadCalculator() {
           </div>
           {hasCurr && (
             <div style={{ marginTop: 16, padding: '10px 14px', background: 'rgba(74,154,106,0.1)', borderRadius: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 12, color: '#8b8780' }}>Volume Load</span>
+              <span style={{ fontSize: 12, color: 'var(--color-ink-2)' }}>Volume Load</span>
               <span style={{ fontSize: 16, fontWeight: 700, color: '#4a9a6a' }}>{fd(calc.currVol, 0)} {unit}</span>
             </div>
           )}
@@ -355,8 +355,8 @@ export default function ProgressiveOverloadCalculator() {
         <button
           onClick={() => setShowSettings(s => !s)}
           style={{
-            background: 'transparent', border: '1px solid rgba(255,255,255,0.10)',
-            borderRadius: 10, padding: '8px 16px', color: '#8b8780',
+            background: 'transparent', border: '1px solid var(--color-rule-strong)',
+            borderRadius: 10, padding: '8px 16px', color: 'var(--color-ink-2)',
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
             display: 'flex', alignItems: 'center', gap: 8,
           }}
@@ -376,22 +376,22 @@ export default function ProgressiveOverloadCalculator() {
             </div>
             {/* Progress target */}
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#8b8780', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-ink-2)', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
                 Overload target: <span style={{ color: '#4a9a6a' }}>{progressTarget}%</span>
               </label>
               <input
                 type="range" min={1} max={15} step={1}
                 value={progressTarget}
                 onChange={e => setProgressTarget(Number(e.target.value))}
-                style={{ width: '100%', accentColor: '#4a9a6a', background: 'rgba(255,255,255,0.1)' }}
+                style={{ width: '100%', accentColor: '#4a9a6a', background: 'var(--color-rule-strong)' }}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#6b6862', marginTop: 4 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--color-ink-muted)', marginTop: 4 }}>
                 <span>1% (micro)</span><span>5% (standard)</span><span>15% (aggressive)</span>
               </div>
             </div>
             {/* 1RM formula */}
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#8b8780', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-ink-2)', letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
                 e1RM formula
               </label>
               {(['average', 'epley', 'brzycki'] as Formula[]).map(f => (
@@ -402,8 +402,8 @@ export default function ProgressiveOverloadCalculator() {
                     style={{ accentColor: '#4a9a6a' }}
                   />
                   <div>
-                    <div style={{ fontSize: 13, color: '#e8e6e0', fontWeight: formula === f ? 600 : 400 }}>{FORMULA_INFO[f].name}</div>
-                    <div style={{ fontSize: 11, color: '#6b6862' }}>{FORMULA_INFO[f].when}</div>
+                    <div style={{ fontSize: 13, color: 'var(--color-ink)', fontWeight: formula === f ? 600 : 400 }}>{FORMULA_INFO[f].name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--color-ink-muted)' }}>{FORMULA_INFO[f].when}</div>
                   </div>
                 </label>
               ))}
@@ -425,9 +425,9 @@ export default function ProgressiveOverloadCalculator() {
             <div style={{ fontSize: 44 }}>{cfg.emoji}</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 22, fontWeight: 800, color: cfg.color, letterSpacing: '0.04em' }}>{cfg.label}</div>
-              {exerciseName && <div style={{ fontSize: 13, color: '#8b8780', marginTop: 2 }}>{exerciseName}</div>}
+              {exerciseName && <div style={{ fontSize: 13, color: 'var(--color-ink-2)', marginTop: 2 }}>{exerciseName}</div>}
               {hasPrev && (
-                <div style={{ fontSize: 14, color: '#aaa8a4', marginTop: 6 }}>
+                <div style={{ fontSize: 14, color: 'var(--color-ink-2)', marginTop: 6 }}>
                   Volume {calc.volPct >= 0 ? 'up' : 'down'}{' '}
                   <strong style={{ color: cfg.color }}>{Math.abs(calc.volPct).toFixed(1)}%</strong>
                   {' '}vs last session
@@ -467,16 +467,16 @@ export default function ProgressiveOverloadCalculator() {
             <VolumeBar prev={calc.prevVol} curr={calc.currVol} target={calc.targetVol} />
             <div style={{ display: 'flex', gap: 20, marginTop: 12, flexWrap: 'wrap' }}>
               {hasPrev && (
-                <div style={{ fontSize: 12, color: '#6b6862' }}>
+                <div style={{ fontSize: 12, color: 'var(--color-ink-muted)' }}>
                   <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: 'rgba(92,122,138,0.7)', marginRight: 6 }} />
                   Last: {fd(calc.prevVol, 0)} {unit}
                 </div>
               )}
-              <div style={{ fontSize: 12, color: '#6b6862' }}>
+              <div style={{ fontSize: 12, color: 'var(--color-ink-muted)' }}>
                 <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: 'rgba(74,154,106,0.8)', marginRight: 6 }} />
                 This: {fd(calc.currVol, 0)} {unit}
               </div>
-              <div style={{ fontSize: 12, color: '#6b6862' }}>
+              <div style={{ fontSize: 12, color: 'var(--color-ink-muted)' }}>
                 <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: 'rgba(196,148,74,0.55)', marginRight: 6 }} />
                 Next target: {fd(calc.targetVol, 0)} {unit} (+{progressTarget}%)
               </div>
@@ -486,7 +486,7 @@ export default function ProgressiveOverloadCalculator() {
           {/* Three Paths to Overload */}
           <div style={{ ...card, marginBottom: 16 }}>
             <div style={sectionLabel}>🛤️ Three Paths to Overload Next Session</div>
-            <p style={{ fontSize: 13, color: '#8b8780', marginTop: 0, marginBottom: 16 }}>
+            <p style={{ fontSize: 13, color: 'var(--color-ink-2)', marginTop: 0, marginBottom: 16 }}>
               Beat your target of <strong style={{ color: '#c4944a' }}>{fd(calc.targetVol, 0)} {unit}</strong> any way you want. Pick the path that feels right for your body today.
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
@@ -512,8 +512,8 @@ export default function ProgressiveOverloadCalculator() {
                 highlight={false}
               />
             </div>
-            <div style={{ marginTop: 14, padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: 10, fontSize: 12, color: '#8b8780' }}>
-              💡 <strong style={{ color: '#e8e6e0' }}>Mix &amp; match allowed.</strong> Any combination that beats {fd(calc.targetVol, 0)} {unit} counts as progressive overload. The highlighted path is the smallest adjustment.
+            <div style={{ marginTop: 14, padding: '10px 14px', background: 'var(--color-surface)', borderRadius: 10, fontSize: 12, color: 'var(--color-ink-2)' }}>
+              💡 <strong style={{ color: 'var(--color-ink)' }}>Mix &amp; match allowed.</strong> Any combination that beats {fd(calc.targetVol, 0)} {unit} counts as progressive overload. The highlighted path is the smallest adjustment.
             </div>
           </div>
 
@@ -528,7 +528,7 @@ export default function ProgressiveOverloadCalculator() {
                     value={`${fd(calc.prevE1RM, 1)} ${unit}`}
                     sub={`${FORMULA_INFO[formula].name.split(' ')[0]}`}
                   />
-                  <div style={{ fontSize: 24, color: '#4a4a4a', alignSelf: 'center' }}>→</div>
+                  <div style={{ fontSize: 24, color: 'var(--color-ink-muted)', alignSelf: 'center' }}>→</div>
                   <MetricBlock
                     label="This session"
                     value={`${fd(calc.currE1RM, 1)} ${unit}`}
@@ -536,15 +536,15 @@ export default function ProgressiveOverloadCalculator() {
                     color={calc.e1RMPct >= 0 ? '#4a9a6a' : '#a05a5a'}
                   />
                 </div>
-                <div style={{ marginTop: 12, fontSize: 12, color: '#6b6862' }}>
+                <div style={{ marginTop: 12, fontSize: 12, color: 'var(--color-ink-muted)' }}>
                   e1RM is best used when you change both weight and reps between sessions — volume alone can be misleading in those cases.
                 </div>
               </div>
               <div>
                 <div style={sectionLabel}>🎯 Intensity Zone</div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: '#e8e6e0', marginBottom: 6 }}>{fd(calc.intensity, 1)}%</div>
-                <div style={{ fontSize: 12, color: '#8b8780', marginBottom: 12 }}>of your estimated 1RM</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, color: '#6b6862' }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 6 }}>{fd(calc.intensity, 1)}%</div>
+                <div style={{ fontSize: 12, color: 'var(--color-ink-2)', marginBottom: 12 }}>of your estimated 1RM</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, fontSize: 11, color: 'var(--color-ink-muted)' }}>
                   {[
                     { zone: '90–100%', rep: '1–3 reps', focus: 'Max Strength' },
                     { zone: '75–85%',  rep: '6–10 reps', focus: 'Hypertrophy' },
@@ -552,10 +552,10 @@ export default function ProgressiveOverloadCalculator() {
                     { zone: '< 65%',   rep: '15+ reps', focus: 'Metabolic' },
                   ].map(z => (
                     <div key={z.zone} style={{
-                      padding: '6px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: 8,
+                      padding: '6px 10px', background: 'var(--color-surface)', borderRadius: 8,
                       border: calc.intensity >= parseFloat(z.zone) && z.zone !== '< 65%' ? '1px solid rgba(74,154,106,0.2)' : '1px solid transparent',
                     }}>
-                      <div style={{ fontWeight: 600, color: '#9b9892' }}>{z.zone}</div>
+                      <div style={{ fontWeight: 600, color: 'var(--color-ink-2)' }}>{z.zone}</div>
                       <div>{z.focus}</div>
                     </div>
                   ))}
@@ -570,7 +570,7 @@ export default function ProgressiveOverloadCalculator() {
               <div style={sectionLabel}>🏅 Relative Strength</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontSize: 11, color: '#6b6862', marginBottom: 4 }}>e1RM ÷ Body Weight</div>
+                  <div style={{ fontSize: 11, color: 'var(--color-ink-muted)', marginBottom: 4 }}>e1RM ÷ Body Weight</div>
                   <div style={{ fontSize: 36, fontWeight: 800, color: calc.tier.color }}>{fd(calc.relStr, 2)}×</div>
                 </div>
                 <div style={{
@@ -580,22 +580,22 @@ export default function ProgressiveOverloadCalculator() {
                 }}>
                   {calc.tier.label}
                 </div>
-                <div style={{ fontSize: 13, color: '#8b8780', flex: 1 }}>{calc.tier.desc}</div>
+                <div style={{ fontSize: 13, color: 'var(--color-ink-2)', flex: 1 }}>{calc.tier.desc}</div>
               </div>
               {/* Tier progression bar */}
               <div style={{ marginTop: 16, display: 'flex', gap: 3 }}>
                 {TIERS.slice().reverse().map((t, i) => (
                   <div key={t.label} style={{
                     flex: 1, height: 6, borderRadius: 4,
-                    background: calc.relStr >= t.min ? t.color : 'rgba(255,255,255,0.07)',
+                    background: calc.relStr >= t.min ? t.color : 'var(--color-surface-2)',
                     transition: 'background 0.3s',
                   }} title={t.label} />
                 ))}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#5a5a5a', marginTop: 4 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--color-ink-muted)', marginTop: 4 }}>
                 <span>Novice</span><span>Beginner</span><span>Intermediate</span><span>Advanced</span><span>Elite</span>
               </div>
-              <div style={{ fontSize: 11, color: '#5a5a5a', marginTop: 10 }}>
+              <div style={{ fontSize: 11, color: 'var(--color-ink-muted)', marginTop: 10 }}>
                 * General reference across all compound lifts. Standards vary significantly by exercise. Use as a guide, not a benchmark.
               </div>
             </div>
@@ -608,14 +608,14 @@ export default function ProgressiveOverloadCalculator() {
         <div style={{
           ...card,
           textAlign: 'center', padding: '40px 28px',
-          border: '1px dashed rgba(255,255,255,0.10)',
+          border: '1px dashed var(--color-rule-strong)',
           marginBottom: 16,
         }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>🏋️</div>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#8b8780', marginBottom: 8 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--color-ink-2)', marginBottom: 8 }}>
             Enter this session&apos;s data to see your results
           </div>
-          <div style={{ fontSize: 13, color: '#5a5a5a' }}>
+          <div style={{ fontSize: 13, color: 'var(--color-ink-muted)' }}>
             Weight · Reps · Sets → Volume Load, e1RM, and three paths to next session
           </div>
         </div>
@@ -627,50 +627,50 @@ export default function ProgressiveOverloadCalculator() {
           onClick={() => setShowGuide(g => !g)}
           style={{
             width: '100%', background: 'transparent', border: 'none',
-            color: '#e8e6e0', cursor: 'pointer', padding: 0,
+            color: 'var(--color-ink)', cursor: 'pointer', padding: 0,
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           }}
         >
           <span style={{ fontSize: 15, fontWeight: 700 }}>📖 What is Progressive Overload?</span>
-          <span style={{ fontSize: 13, color: '#8b8780' }}>{showGuide ? 'Hide ▲' : 'Read guide ▼'}</span>
+          <span style={{ fontSize: 13, color: 'var(--color-ink-2)' }}>{showGuide ? 'Hide ▲' : 'Read guide ▼'}</span>
         </button>
         {showGuide && (
           <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#c4944a', marginBottom: 8 }}>📌 What is it?</div>
-              <p style={{ margin: 0, fontSize: 13, color: '#aaa8a4', lineHeight: 1.7 }}>
+              <p style={{ margin: 0, fontSize: 13, color: 'var(--color-ink-2)', lineHeight: 1.7 }}>
                 Progressive overload is the foundational principle behind all strength and muscle gains. It means systematically increasing the demand placed on your body over time so your muscles continue to adapt and grow stronger. Without it, you hit a plateau — your body stops changing because it's no longer being challenged beyond what it's used to.
               </p>
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#c4944a', marginBottom: 8 }}>⚙️ How to use this calculator</div>
-              <ol style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: '#aaa8a4', lineHeight: 1.9 }}>
-                <li>Enter your <strong style={{ color: '#e8e6e0' }}>last session</strong> data (if you have it).</li>
-                <li>Enter your <strong style={{ color: '#e8e6e0' }}>current session</strong> — weight, reps, and sets.</li>
-                <li>See your <strong style={{ color: '#e8e6e0' }}>Volume Load</strong> and whether you progressed.</li>
-                <li>Use the <strong style={{ color: '#e8e6e0' }}>Three Paths</strong> to plan exactly what to do next session.</li>
-                <li>Add your body weight to unlock the <strong style={{ color: '#e8e6e0' }}>Relative Strength</strong> tier.</li>
+              <ol style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: 'var(--color-ink-2)', lineHeight: 1.9 }}>
+                <li>Enter your <strong style={{ color: 'var(--color-ink)' }}>last session</strong> data (if you have it).</li>
+                <li>Enter your <strong style={{ color: 'var(--color-ink)' }}>current session</strong> — weight, reps, and sets.</li>
+                <li>See your <strong style={{ color: 'var(--color-ink)' }}>Volume Load</strong> and whether you progressed.</li>
+                <li>Use the <strong style={{ color: 'var(--color-ink)' }}>Three Paths</strong> to plan exactly what to do next session.</li>
+                <li>Add your body weight to unlock the <strong style={{ color: 'var(--color-ink)' }}>Relative Strength</strong> tier.</li>
               </ol>
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#c4944a', marginBottom: 8 }}>📐 Volume Load formula</div>
-              <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '14px 18px', fontFamily: 'monospace', fontSize: 15, color: '#4a9a6a' }}>
+              <div style={{ background: 'var(--color-surface)', borderRadius: 12, padding: '14px 18px', fontFamily: 'monospace', fontSize: 15, color: '#4a9a6a' }}>
                 Volume Load = Weight × Reps × Sets
               </div>
-              <p style={{ margin: '10px 0 0', fontSize: 13, color: '#aaa8a4', lineHeight: 1.7 }}>
-                Example: 50 kg × 10 reps × 3 sets = <strong style={{ color: '#e8e6e0' }}>1,500 kg</strong> of total volume. Next week, beat 1,575 kg (at +5%) any way you choose — more reps, more weight, or more sets.
+              <p style={{ margin: '10px 0 0', fontSize: 13, color: 'var(--color-ink-2)', lineHeight: 1.7 }}>
+                Example: 50 kg × 10 reps × 3 sets = <strong style={{ color: 'var(--color-ink)' }}>1,500 kg</strong> of total volume. Next week, beat 1,575 kg (at +5%) any way you choose — more reps, more weight, or more sets.
               </p>
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#c4944a', marginBottom: 8 }}>🧠 When to use Estimated 1RM (e1RM)</div>
-              <p style={{ margin: 0, fontSize: 13, color: '#aaa8a4', lineHeight: 1.7 }}>
+              <p style={{ margin: 0, fontSize: 13, color: 'var(--color-ink-2)', lineHeight: 1.7 }}>
                 If you changed <em>both</em> weight and reps between sessions — for example, you went heavier but did fewer reps — volume alone can be misleading. The e1RM tells you whether you actually got <em>stronger</em>, even if volume appears to have dropped. A rising e1RM alongside lower volume usually means you shifted to a higher-intensity training phase — both are valid paths to progress.
               </p>
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#c4944a', marginBottom: 8 }}>💡 Pro tip</div>
-              <div style={{ background: 'rgba(196,148,74,0.08)', border: '1px solid rgba(196,148,74,0.2)', borderRadius: 12, padding: '14px 18px', fontSize: 13, color: '#aaa8a4', lineHeight: 1.7 }}>
-                Don&apos;t always chase the same path. Rotating between adding reps, weight, and sets prevents accommodation and keeps adaptation maximal. A micro-progression of just 2.5 kg every two weeks compounds to <strong style={{ color: '#e8e6e0' }}>65 kg added in a single year</strong> — small wins build empires.
+              <div style={{ background: 'rgba(196,148,74,0.08)', border: '1px solid rgba(196,148,74,0.2)', borderRadius: 12, padding: '14px 18px', fontSize: 13, color: 'var(--color-ink-2)', lineHeight: 1.7 }}>
+                Don&apos;t always chase the same path. Rotating between adding reps, weight, and sets prevents accommodation and keeps adaptation maximal. A micro-progression of just 2.5 kg every two weeks compounds to <strong style={{ color: 'var(--color-ink)' }}>65 kg added in a single year</strong> — small wins build empires.
               </div>
             </div>
           </div>

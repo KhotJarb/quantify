@@ -9,14 +9,14 @@ const C = {
   borderline: '#f59e0b',
   high:       '#f97316',
   veryHigh:   '#ef4444',
-  text:       '#f1efe9',
-  muted:      '#9b9891',
-  faint:      '#6b6865',
-  accent:     '#60a5fa',
-  card:       'rgba(255,255,255,0.04)',
-  cardBorder: 'rgba(255,255,255,0.08)',
-  inputBg:    'rgba(255,255,255,0.06)',
-  inputBorder:'rgba(255,255,255,0.12)',
+  text:       'var(--color-ink)',
+  muted:      'var(--color-ink-2)',
+  faint:      'var(--color-ink-muted)',
+  accent:     'var(--color-accent)',
+  card:       'var(--color-surface)',
+  cardBorder: 'var(--color-rule)',
+  inputBg:    'var(--color-surface-2)',
+  inputBorder:'var(--color-rule-strong)',
 };
 
 type Units = 'mgdl' | 'mmol';
@@ -85,10 +85,10 @@ function NInput({ id, label, value, onChange, unit, hint, placeholder }: {
             width:'100%', boxSizing:'border-box',
             padding: unit ? '11px 60px 11px 14px' : '11px 14px',
             background:C.inputBg, border:`1px solid ${C.inputBorder}`,
-            borderRadius:10, color:C.text, fontSize:15, fontWeight:500,
+            borderRadius:10, color:C.text, fontSize:16, fontWeight:500,
             outline:'none', fontFamily:'inherit', transition:'border 0.2s, box-shadow 0.2s',
           }}
-          onFocus={e => { e.target.style.borderColor='rgba(96,165,250,0.45)'; e.target.style.boxShadow='0 0 0 3px rgba(96,165,250,0.08)'; }}
+          onFocus={e => { e.target.style.borderColor='var(--color-accent)'; e.target.style.boxShadow='0 0 0 3px var(--color-accent-soft)'; }}
           onBlur={e  => { e.target.style.borderColor=C.inputBorder; e.target.style.boxShadow='none'; }}
         />
         {unit && (
@@ -139,13 +139,13 @@ function LDLGauge({ ldl, target }: { ldl:number; target:number }) {
           <div style={{
             position:'absolute', left:pct(Math.min(ldl, SCALE - 2)),
             top:-3, bottom:-3, width:4, borderRadius:2,
-            background:'white', transform:'translateX(-50%)',
-            boxShadow:'0 0 8px rgba(255,255,255,0.9)', zIndex:2,
+            background:'var(--color-ink)', transform:'translateX(-50%)',
+            boxShadow:'0 0 8px var(--color-ink)', zIndex:2,
           }}>
             {/* Tooltip bubble */}
             <div style={{
               position:'absolute', bottom:'calc(100% + 6px)', left:'50%', transform:'translateX(-50%)',
-              background:labelTier.color, color:'white', padding:'3px 8px', borderRadius:6,
+              background:labelTier.color, color: 'var(--color-accent-ink)', padding:'3px 8px', borderRadius:6,
               fontSize:11, fontWeight:700, whiteSpace:'nowrap',
               boxShadow:`0 2px 8px ${labelTier.color}66`,
             }}>
@@ -159,7 +159,7 @@ function LDLGauge({ ldl, target }: { ldl:number; target:number }) {
           <div style={{
             position:'absolute', left:pct(target),
             top:-4, bottom:-4, width:2,
-            borderLeft:'2px dashed rgba(255,255,255,0.45)',
+            borderLeft:'2px dashed var(--color-ink-muted)',
             transform:'translateX(-50%)', zIndex:1,
           }} />
         )}
@@ -175,12 +175,12 @@ function LDLGauge({ ldl, target }: { ldl:number; target:number }) {
       {/* Legend */}
       <div style={{ display:'flex', gap:14, marginTop:8, flexWrap:'wrap' }}>
         <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10, color:C.muted }}>
-          <div style={{ width:3, height:14, background:'white', borderRadius:2, boxShadow:'0 0 5px rgba(255,255,255,0.8)' }} />
+          <div style={{ width:3, height:14, background:'var(--color-ink)', borderRadius:2, boxShadow:'0 0 5px var(--color-ink)' }} />
           Your LDL {ldl > SCALE ? `(>${SCALE})` : ''}
         </div>
         {target > 0 && (
           <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10, color:C.muted }}>
-            <div style={{ width:12, height:2, borderTop:'2px dashed rgba(255,255,255,0.45)' }} />
+            <div style={{ width:12, height:2, borderTop:'2px dashed var(--color-ink-muted)' }} />
             Target ({`< ${target}`} mg/dL)
           </div>
         )}
@@ -210,12 +210,12 @@ function RatioBar({ label, sub, value, max, lo, hi }: {
           <div style={{ fontSize:10, fontWeight:700, color, letterSpacing:'0.05em' }}>{statusLabel}</div>
         </div>
       </div>
-      <div style={{ position:'relative', height:8, borderRadius:4, background:'rgba(255,255,255,0.07)' }}>
+      <div style={{ position:'relative', height:8, borderRadius:4, background:'var(--color-surface-2)' }}>
         <div style={{ width:`${fillPct}%`, height:'100%', borderRadius:4,
           background:`linear-gradient(90deg, ${C.optimal}, ${color})`,
           transition:'width 0.4s cubic-bezier(0.4,0,0.2,1)' }} />
-        <div style={{ position:'absolute', left:`${loPct}%`, top:0, bottom:0, width:1, background:'rgba(255,255,255,0.20)' }} />
-        <div style={{ position:'absolute', left:`${hiPct}%`, top:0, bottom:0, width:1, background:'rgba(255,255,255,0.20)' }} />
+        <div style={{ position:'absolute', left:`${loPct}%`, top:0, bottom:0, width:1, background:'var(--color-rule-strong)' }} />
+        <div style={{ position:'absolute', left:`${hiPct}%`, top:0, bottom:0, width:1, background:'var(--color-rule-strong)' }} />
       </div>
     </div>
   );
@@ -332,17 +332,17 @@ export default function LDLCalculatorEnhanced() {
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
         input[type=number] { -moz-appearance:textfield; }
-        .ldl-pill { display:flex; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.10); }
-        .ldl-pill button { flex:1; padding:9px 14px; background:transparent; border:none; color:#9b9891; cursor:pointer; font-size:13px; font-weight:600; transition:all 0.18s; font-family:inherit; white-space:nowrap; }
-        .ldl-pill button.lp-active { background:rgba(96,165,250,0.15); color:#60a5fa; }
-        .ldl-pill button:hover:not(.lp-active) { background:rgba(255,255,255,0.06); color:#f1efe9; }
-        .ldl-risk-bar { display:flex; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.10); }
-        .ldl-risk-bar button { flex:1; padding:10px 12px; background:transparent; border:none; color:#9b9891; cursor:pointer; font-size:11px; font-weight:600; transition:all 0.18s; font-family:inherit; text-align:left; line-height:1.4; }
-        .ldl-risk-bar button.lr-active { background:rgba(96,165,250,0.12); color:#60a5fa; border-bottom:2px solid #60a5fa; }
-        .ldl-risk-bar button:hover:not(.lr-active) { background:rgba(255,255,255,0.05); color:#f1efe9; }
-        .ldl-guide-btn { width:100%; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-family:inherit; color:#f1efe9; transition:background 0.18s; margin-bottom:4px; }
-        .ldl-guide-btn:hover { background:rgba(255,255,255,0.06); }
-        .ldl-guide-body { padding:14px 18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.07); border-top:none; border-bottom-left-radius:10px; border-bottom-right-radius:10px; margin-bottom:4px; }
+        .ldl-pill { display:flex; border-radius:10px; overflow:hidden; border:1px solid var(--color-rule-strong); }
+        .ldl-pill button { flex:1; padding:9px 14px; background:transparent; border:none; color:var(--color-ink-2); cursor:pointer; font-size:13px; font-weight:600; transition:all 0.18s; font-family:inherit; white-space:nowrap; }
+        .ldl-pill button.lp-active { background:var(--color-accent-soft); color:var(--color-accent); }
+        .ldl-pill button:hover:not(.lp-active) { background:var(--color-surface-2); color:var(--color-ink); }
+        .ldl-risk-bar { display:flex; border-radius:12px; overflow:hidden; border:1px solid var(--color-rule-strong); }
+        .ldl-risk-bar button { flex:1; padding:10px 12px; background:transparent; border:none; color:var(--color-ink-2); cursor:pointer; font-size:11px; font-weight:600; transition:all 0.18s; font-family:inherit; text-align:left; line-height:1.4; }
+        .ldl-risk-bar button.lr-active { background:var(--color-accent-soft); color:var(--color-accent); border-bottom:2px solid var(--color-accent); }
+        .ldl-risk-bar button:hover:not(.lr-active) { background:var(--color-surface-2); color:var(--color-ink); }
+        .ldl-guide-btn { width:100%; background:var(--color-surface); border:1px solid var(--color-rule); border-radius:10px; padding:12px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-family:inherit; color:var(--color-ink); transition:background 0.18s; margin-bottom:4px; }
+        .ldl-guide-btn:hover { background:var(--color-surface-2); }
+        .ldl-guide-body { padding:14px 18px; background:var(--color-surface); border:1px solid var(--color-surface-2); border-top:none; border-bottom-left-radius:10px; border-bottom-right-radius:10px; margin-bottom:4px; }
         @keyframes ldl-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         .ldl-in { animation:ldl-in 0.3s ease both; }
       `}</style>
@@ -419,7 +419,7 @@ export default function LDLCalculatorEnhanced() {
       {/* ── Empty state ───────────────────────────────────────────────── */}
       {!parsed && (
         <div className="ldl-in" style={{
-          ...CARD, border:'1px dashed rgba(255,255,255,0.10)',
+          ...CARD, border:'1px dashed var(--color-rule-strong)',
           textAlign:'center', padding:'52px 28px', marginBottom:16,
         }}>
           <div style={{ fontSize:52, marginBottom:14 }}>🩸</div>
@@ -483,15 +483,15 @@ export default function LDLCalculatorEnhanced() {
             <div style={{ marginTop:14, display:'flex', gap:8, flexWrap:'wrap' }}>
               <span style={{
                 padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:700,
-                background:parsed.useSampson?'rgba(96,165,250,0.15)':'rgba(255,255,255,0.07)',
-                border:`1px solid ${parsed.useSampson?'rgba(96,165,250,0.3)':'rgba(255,255,255,0.12)'}`,
+                background:parsed.useSampson?'var(--color-accent-soft)':'var(--color-surface-2)',
+                border:`1px solid ${parsed.useSampson?'var(--color-accent)':'var(--color-rule-strong)'}`,
                 color:parsed.useSampson?C.accent:C.muted,
               }}>
                 {parsed.useSampson ? '✦ Sampson 2020 applied' : '✦ Friedewald applied'}
               </span>
               <span style={{
                 padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600,
-                background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:C.muted,
+                background:'var(--color-surface-2)', border:'1px solid var(--color-rule-strong)', color:C.muted,
               }}>
                 {parsed.useSampson
                   ? (parsed.tg >= 150 ? 'TG ≥ 150 mg/dL — Sampson more accurate' : 'LDL < 70 mg/dL — Sampson more accurate')
@@ -524,8 +524,8 @@ export default function LDLCalculatorEnhanced() {
                 {/* Friedewald */}
                 <div style={{
                   padding:'18px 20px', borderRadius:14,
-                  background: !parsed.useSampson ? 'rgba(16,185,129,0.07)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${!parsed.useSampson ? 'rgba(16,185,129,0.25)' : 'rgba(255,255,255,0.08)'}`,
+                  background: !parsed.useSampson ? 'rgba(16,185,129,0.07)' : 'var(--color-surface)',
+                  border: `1px solid ${!parsed.useSampson ? 'rgba(16,185,129,0.25)' : 'var(--color-rule)'}`,
                 }}>
                   <div style={{ fontSize:10, fontWeight:800, color:C.muted, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>
                     Friedewald (1972) {!parsed.useSampson && <span style={{ color:C.optimal }}> ◀ Active</span>}
@@ -546,8 +546,8 @@ export default function LDLCalculatorEnhanced() {
                 {/* Sampson */}
                 <div style={{
                   padding:'18px 20px', borderRadius:14,
-                  background: parsed.useSampson ? 'rgba(16,185,129,0.07)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${parsed.useSampson ? 'rgba(16,185,129,0.25)' : 'rgba(255,255,255,0.08)'}`,
+                  background: parsed.useSampson ? 'rgba(16,185,129,0.07)' : 'var(--color-surface)',
+                  border: `1px solid ${parsed.useSampson ? 'rgba(16,185,129,0.25)' : 'var(--color-rule)'}`,
                 }}>
                   <div style={{ fontSize:10, fontWeight:800, color:C.muted, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>
                     Sampson 2020 — NIH {parsed.useSampson && <span style={{ color:C.optimal }}> ◀ Active</span>}
@@ -566,12 +566,12 @@ export default function LDLCalculatorEnhanced() {
                 {/* Agreement */}
                 <div style={{
                   gridColumn:'1 / -1', padding:'12px 16px',
-                  background:'rgba(255,255,255,0.03)', borderRadius:10,
+                  background:'var(--color-surface)', borderRadius:10,
                   display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10,
                 }}>
                   <span style={{ fontSize:12, color:C.muted }}>Formula agreement</span>
                   <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                    <div style={{ width:120, height:5, borderRadius:3, background:'rgba(255,255,255,0.10)', overflow:'hidden' }}>
+                    <div style={{ width:120, height:5, borderRadius:3, background:'var(--color-rule-strong)', overflow:'hidden' }}>
                       <div style={{
                         height:'100%', transition:'width 0.4s',
                         width:`${Math.max(0, 100 - (parsed.delta / 20) * 100)}%`,
@@ -596,7 +596,7 @@ export default function LDLCalculatorEnhanced() {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:16 }}>
 
               {/* Non-HDL */}
-              <div style={{ padding:'16px 18px', borderRadius:12, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)' }}>
+              <div style={{ padding:'16px 18px', borderRadius:12, background:'var(--color-surface)', border:'1px solid var(--color-surface-2)' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
                   <div>
                     <div style={{ fontSize:12, fontWeight:700, color:C.muted }}>Non-HDL Cholesterol</div>
@@ -607,7 +607,7 @@ export default function LDLCalculatorEnhanced() {
                     <div style={{ fontSize:10, color:C.faint }}>{ul}</div>
                   </div>
                 </div>
-                <div style={{ height:6, borderRadius:3, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
+                <div style={{ height:6, borderRadius:3, background:'var(--color-surface-2)', overflow:'hidden' }}>
                   <div style={{ height:'100%', borderRadius:3, transition:'width 0.4s',
                     width:`${Math.min(parsed.nonHDL/200*100,100)}%`,
                     background:statusColor(parsed.nonHDL,130,160) }} />
@@ -618,7 +618,7 @@ export default function LDLCalculatorEnhanced() {
               </div>
 
               {/* VLDL */}
-              <div style={{ padding:'16px 18px', borderRadius:12, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)' }}>
+              <div style={{ padding:'16px 18px', borderRadius:12, background:'var(--color-surface)', border:'1px solid var(--color-surface-2)' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
                   <div>
                     <div style={{ fontSize:12, fontWeight:700, color:C.muted }}>VLDL Cholesterol</div>
@@ -629,7 +629,7 @@ export default function LDLCalculatorEnhanced() {
                     <div style={{ fontSize:10, color:C.faint }}>{ul}</div>
                   </div>
                 </div>
-                <div style={{ height:6, borderRadius:3, background:'rgba(255,255,255,0.07)', overflow:'hidden' }}>
+                <div style={{ height:6, borderRadius:3, background:'var(--color-surface-2)', overflow:'hidden' }}>
                   <div style={{ height:'100%', borderRadius:3, transition:'width 0.4s',
                     width:`${Math.min(parsed.vldl/80*100,100)}%`,
                     background:statusColor(parsed.vldl,30,40) }} />
@@ -704,8 +704,8 @@ export default function LDLCalculatorEnhanced() {
                       position:'absolute',
                       left:`${Math.min(Math.max(((parsed.aip + 0.3) / 1.0) * 100, 1), 99)}%`,
                       top:0, bottom:0, width:3, borderRadius:1,
-                      background:'white', transform:'translateX(-50%)',
-                      boxShadow:'0 0 5px rgba(255,255,255,0.8)',
+                      background:'var(--color-ink)', transform:'translateX(-50%)',
+                      boxShadow:'0 0 5px var(--color-ink)',
                     }} />
                   </div>
                   <div style={{ display:'flex', justifyContent:'space-between', fontSize:9, color:C.faint, marginTop:3 }}>
@@ -716,7 +716,7 @@ export default function LDLCalculatorEnhanced() {
             </div>
 
             {/* Reference table */}
-            <div style={{ padding:'14px 16px', background:'rgba(255,255,255,0.03)', borderRadius:10 }}>
+            <div style={{ padding:'14px 16px', background:'var(--color-surface)', borderRadius:10 }}>
               <div style={{ ...SL, marginBottom:10 }}>Quick Reference</div>
               <div style={{ display:'grid', gridTemplateColumns:'auto 1fr 1fr 1fr', gap:'5px 14px', fontSize:11 }}>
                 <div style={{ color:C.faint, fontWeight:700 }}>Ratio</div>
@@ -774,14 +774,14 @@ export default function LDLCalculatorEnhanced() {
 
             {/* Progress bar */}
             <div style={{ marginBottom:16 }}>
-              <div style={{ height:10, borderRadius:5, background:'rgba(255,255,255,0.08)', overflow:'hidden', position:'relative' }}>
+              <div style={{ height:10, borderRadius:5, background:'var(--color-rule)', overflow:'hidden', position:'relative' }}>
                 <div style={{
                   height:'100%', borderRadius:5, transition:'width 0.5s cubic-bezier(0.4,0,0.2,1)',
                   width:`${Math.min((parsed.ldlBest / (target * 2)) * 100, 100)}%`,
                   background: targetMet ? C.optimal : `linear-gradient(90deg, ${C.optimal}, ${tier.color})`,
                 }} />
                 <div style={{ position:'absolute', left:'50%', top:0, bottom:0,
-                  width:2, borderLeft:'2px dashed rgba(255,255,255,0.4)' }} />
+                  width:2, borderLeft:'2px dashed var(--color-ink-muted)' }} />
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', fontSize:10, color:C.faint, marginTop:3 }}>
                 <span>0</span>
@@ -812,8 +812,8 @@ export default function LDLCalculatorEnhanced() {
                     return (
                       <div key={item.label} style={{
                         padding:'10px 12px', borderRadius:10,
-                        background:meets?'rgba(16,185,129,0.09)':'rgba(255,255,255,0.04)',
-                        border:`1px solid ${meets?'rgba(16,185,129,0.22)':'rgba(255,255,255,0.08)'}`,
+                        background:meets?'rgba(16,185,129,0.09)':'var(--color-surface)',
+                        border:`1px solid ${meets?'rgba(16,185,129,0.22)':'var(--color-rule)'}`,
                       }}>
                         <div style={{ fontSize:11, color:C.muted, marginBottom:5 }}>{item.label}</div>
                         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -834,7 +834,7 @@ export default function LDLCalculatorEnhanced() {
           </div>
 
           {/* ─ Disclaimer ────────────────────────────────────────────── */}
-          <div style={{ ...CARD, marginBottom:16, background:'transparent', border:'1px solid rgba(255,255,255,0.06)', padding:'14px 18px' }}>
+          <div style={{ ...CARD, marginBottom:16, background:'transparent', border:'1px solid var(--color-surface-2)', padding:'14px 18px' }}>
             <div style={{ fontSize:11, color:C.faint, lineHeight:1.7 }}>
               <strong style={{ color:C.muted }}>Clinical disclaimer:</strong> This tool is for educational and reference purposes only. LDL values are estimates calculated from your self-reported lipid values using validated equations (Friedewald 1972; Sampson et al., JAMA Cardiology 2020). Results do not constitute medical advice and should not replace consultation with a qualified healthcare professional. Treatment decisions require comprehensive clinical assessment including full history, physical examination, and appropriate laboratory evaluation.
             </div>

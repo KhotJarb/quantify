@@ -1,45 +1,74 @@
 'use client';
 
 import Link from 'next/link';
-import type { CalculatorSchema } from '@/types/calculator';
+import { Star, ArrowUpRight } from 'lucide-react';
+import { CategoryIcon } from '@/components/ui/SuiteIcon';
+import type { CalculatorSummary } from '@/lib/suites';
 
 interface CalculatorCardProps {
-  calculator: CalculatorSchema;
-  index?: number;
+  calculator: CalculatorSummary;
   isFavorite?: boolean;
   onToggleFavorite?: (id: string) => void;
+  variant?: 'default' | 'featured';
 }
 
 export default function CalculatorCard({
   calculator,
-  index = 0,
   isFavorite = false,
   onToggleFavorite,
+  variant = 'default',
 }: CalculatorCardProps) {
   return (
-    <div className="calc-card-wrapper" style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}>
-      <Link href={`/calculator/${calculator.slug}`} className="calc-card">
-        <span className="calc-card__category">{calculator.category}</span>
-        <div className="calc-card__icon">{calculator.icon}</div>
-        <h3 className="calc-card__title">{calculator.title}</h3>
-        <p className="calc-card__desc">{calculator.description}</p>
-        <div className="calc-card__tags">
-          {(calculator.tags ?? []).slice(0, 3).map((tag) => (
-            <span key={tag} className="calc-card__tag">{tag}</span>
-          ))}
+    <article className={`inst-card ${variant === 'featured' ? 'inst-card--featured' : ''}`}>
+      <Link href={`/calculator/${calculator.slug}`} className="inst-card__link">
+        <div className="inst-card__top">
+          <span className="inst-card__icon">
+            <CategoryIcon categoryId={calculator.category} size={17} />
+          </span>
+          <span className="inst-card__cat">{calculator.categoryLabel}</span>
+          {calculator.isCustom && (
+            <span className="inst-card__badge">Studio</span>
+          )}
+        </div>
+
+        <h3 className="inst-card__title">{calculator.title}</h3>
+        <p className="inst-card__desc">{calculator.description}</p>
+
+        <div className="inst-card__foot">
+          <div className="inst-card__tags">
+            {calculator.tags.slice(0, 2).map((tag) => (
+              <span key={tag} className="inst-card__tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <span className="inst-card__go" aria-hidden="true">
+            <ArrowUpRight size={15} strokeWidth={1.75} />
+          </span>
         </div>
       </Link>
 
       {onToggleFavorite && (
         <button
-          className={`pin-btn${isFavorite ? ' pin-btn--active' : ''}`}
-          onClick={(e) => { e.preventDefault(); onToggleFavorite(calculator.id); }}
-          aria-label={isFavorite ? 'Unpin calculator' : 'Pin to favorites'}
-          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          type="button"
+          className={`inst-card__pin ${isFavorite ? 'inst-card__pin--active' : ''}`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleFavorite(calculator.id);
+          }}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? `Remove ${calculator.title} from saved` : `Save ${calculator.title}`}
+          title={isFavorite ? 'Remove from saved' : 'Save instrument'}
         >
-          {isFavorite ? '★' : '☆'}
+          <Star
+            size={14}
+            strokeWidth={1.85}
+            fill={isFavorite ? 'currentColor' : 'none'}
+            aria-hidden="true"
+          />
         </button>
       )}
-    </div>
+    </article>
   );
 }
